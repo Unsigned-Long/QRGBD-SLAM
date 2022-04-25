@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "QCloseEvent"
+#include "QFileDialog"
 #include "QMessageBox"
+#include "csv.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -16,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    delete this->_slam;
+    delete this->_rebuilder;
+    delete this->_recognizer;
     delete ui;
 }
 
@@ -24,6 +29,66 @@ void MainWindow::connection()
     // for start button
     connect(ui->btn_start, &QPushButton::clicked, this, [=]() {
         ui->stackedWidget->setCurrentWidget(ui->page_use);
+    });
+    // for help button 2
+    connect(ui->btn_help_2, &QPushButton::clicked, this, [=]() {
+        ui->btn_help->click();
+    });
+    // for back button
+    connect(ui->btn_back, &QPushButton::clicked, this, [=]() {
+        ui->tabWidget->setCurrentWidget(ui->page_main);
+    });
+    // for save button
+    connect(ui->btn_save, &QPushButton::clicked, this, [=]() {
+        if (ui->tabW_mappoint->rowCount() == 0 && ui->tabW_keyframes->rowCount() == 0)
+        {
+            // no data
+            QMessageBox::information(this, "Attention", "No data to save!");
+            return;
+        }
+        auto path = QFileDialog::getExistingDirectory(this, "save data path", QDir::currentPath());
+        if (path.isEmpty())
+        {
+            return;
+        }
+
+        auto slamSystem = this->_slam->getSlamSystem();
+        const auto atlas = slamSystem->mpAtlas;
+        std::vector<ORB_SLAM3::MapPoint *> mapPoints = atlas->GetAllMapPoints();
+        std::vector<ORB_SLAM3::KeyFrame *> keyFrames = atlas->GetAllKeyFrames();
+
+        // save map points and key frames info
+        auto mapPointsFile = ns_csv::CSVWriter::create(path.toStdString() + "/mapPoints.csv");
+        auto keyFramesFile = ns_csv::CSVWriter::create(path.toStdString() + "/keyFrames.csv");
+        mapPointsFile->setPrecision(6);
+        keyFramesFile->setPrecision(6);
+
+        mapPointsFile->writeLine(',', "id", "X(M)", "Y(M)", "Z(M)");
+
+        for (auto mpPtr : mapPoints)
+        {
+            if (mpPtr != nullptr)
+            {
+                // write data
+                auto pos = mpPtr->GetWorldPos();
+                mapPointsFile->writeLine(',', mpPtr->mnId, pos(0), pos(1), pos(2));
+            }
+        }
+        keyFramesFile->writeLine(',', "id", "Qx", "Qy", "Qz", "Qw", "X(M)", "Y(M)", "Z(M)");
+
+        for (auto framePtr : keyFrames)
+        {
+            if (framePtr != nullptr)
+            {
+                // write data
+                auto rot = Eigen::Quaternionf(framePtr->GetRotation()).normalized();
+                auto trans = framePtr->GetTranslation();
+
+                keyFramesFile->writeLine(',', framePtr->mnId, rot.x(), rot.y(), rot.z(), rot.w(),
+                                         trans(0), trans(1), trans(2));
+            }
+        }
+        QMessageBox::information(this, "Attention", "Save finished!");
     });
     // for quit button
     connect(ui->btn_quit, &QPushButton::clicked, this, [=]() {
@@ -259,7 +324,9 @@ void MainWindow::processNewFrame()
     {
         this->statusBar()->showMessage("process for all frames finished.");
         qDebug() << "slam finished!";
+        this->_slam->shutdown();
         ui->btn_forcequit->click();
+        this->displayMapInfo();
         return;
     }
 
@@ -332,5 +399,120 @@ void MainWindow::quitThreads()
     {
         this->_rebulidThread.quit();
         this->_rebulidThread.wait();
+    }
+}
+
+void MainWindow::displayMapInfo()
+{
+    this->displayMapPoints();
+    this->displayKeyFrames();
+    ui->tabWidget->setCurrentIndex(1);
+}
+
+void MainWindow::displayMapPoints()
+{
+    auto slamSystem = this->_slam->getSlamSystem();
+    const auto atlas = slamSystem->mpAtlas;
+    std::vector<ORB_SLAM3::MapPoint *> mapPoints = atlas->GetAllMapPoints();
+    int num = 0;
+    for (auto mpPtr : mapPoints)
+    {
+        if (mpPtr != nullptr)
+        {
+            ++num;
+        }
+    }
+    ui->tabW_mappoint->setColumnCount(4);
+    ui->tabW_mappoint->setHorizontalHeaderLabels({"id", "X(M)", "Y(M)", "Z(M)"});
+    ui->tabW_mappoint->setRowCount(num);
+    QTableWidgetItem *item;
+    int idx = 0;
+    for (auto mpPtr : mapPoints)
+    {
+        if (mpPtr != nullptr)
+        {
+            item = new QTableWidgetItem(QString::number(mpPtr->mnId));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_mappoint->setItem(idx, 0, item);
+
+            auto pos = mpPtr->GetWorldPos();
+
+            item = new QTableWidgetItem(QString::number(pos(0), 'f', 3));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_mappoint->setItem(idx, 1, item);
+
+            item = new QTableWidgetItem(QString::number(pos(1), 'f', 3));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_mappoint->setItem(idx, 2, item);
+
+            item = new QTableWidgetItem(QString::number(pos(2), 'f', 3));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_mappoint->setItem(idx, 3, item);
+
+            ++idx;
+        }
+    }
+}
+
+void MainWindow::displayKeyFrames()
+{
+    auto slamSystem = this->_slam->getSlamSystem();
+    const auto &atlas = slamSystem->mpAtlas;
+    std::vector<ORB_SLAM3::KeyFrame *> keyFrames = atlas->GetAllKeyFrames();
+    int num = 0;
+    for (auto framePtr : keyFrames)
+    {
+        if (framePtr != nullptr)
+        {
+            ++num;
+        }
+    }
+
+    int idx = 0;
+    ui->tabW_keyframes->setColumnCount(8);
+    ui->tabW_keyframes->setHorizontalHeaderLabels({"id", "Qx", "Qy", "Qz", "Qw", "X(M)", "Y(M)", "Z(M)"});
+    ui->tabW_keyframes->setRowCount(num);
+    QTableWidgetItem *item;
+    for (auto framePtr : keyFrames)
+    {
+        if (framePtr != nullptr)
+        {
+            auto rot = Eigen::Quaternionf(framePtr->GetRotation()).normalized();
+            auto trans = framePtr->GetTranslation();
+
+            item = new QTableWidgetItem(QString::number(framePtr->mnId));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_keyframes->setItem(idx, 0, item);
+
+            item = new QTableWidgetItem(QString::number(rot.x(), 'f', 3));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_keyframes->setItem(idx, 1, item);
+
+            item = new QTableWidgetItem(QString::number(rot.y(), 'f', 3));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_keyframes->setItem(idx, 2, item);
+
+            item = new QTableWidgetItem(QString::number(rot.z(), 'f', 3));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_keyframes->setItem(idx, 3, item);
+
+            item = new QTableWidgetItem(QString::number(rot.w(), 'f', 3));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_keyframes->setItem(idx, 4, item);
+
+            item = new QTableWidgetItem(QString::number(trans(0), 'f', 3));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_keyframes->setItem(idx, 5, item);
+
+            item = new QTableWidgetItem(QString::number(trans(1), 'f', 3));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_keyframes->setItem(idx, 6, item);
+
+            item = new QTableWidgetItem(QString::number(trans(2), 'f', 3));
+            item->setTextAlignment(Qt::AlignCenter);
+            ui->tabW_keyframes->setItem(idx, 7, item);
+
+            ++idx;
+        }
     }
 }

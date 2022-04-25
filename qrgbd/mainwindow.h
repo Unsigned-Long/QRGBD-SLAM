@@ -39,6 +39,12 @@ public:
 
     void quitThreads();
 
+    void displayMapInfo();
+
+    void displayMapPoints();
+
+    void displayKeyFrames();
+
 signals:
     void signalCreateSlamSystem(ConfigDialog *config);
 

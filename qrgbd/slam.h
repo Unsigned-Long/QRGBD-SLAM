@@ -15,6 +15,10 @@ class Slam : public QObject
 public:
     explicit Slam(QObject *parent = nullptr);
 
+    void shutdown();
+
+    std::shared_ptr<ORB_SLAM3::System> getSlamSystem();
+
 signals:
     void createSlamSystemFinished(float scale);
 

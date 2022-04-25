@@ -68,6 +68,8 @@ set(PROJECT_SOURCES
         yolo_v2_class.hpp
         yolo.cpp
 
+        csv.h
+
         # customer ---
 )
 
