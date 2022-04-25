@@ -192,7 +192,7 @@ public:
     void InsertTrackTime(double& time);
 #endif
 
-private:
+public:
 
     void SaveAtlas(int type);
     bool LoadAtlas(int type);
