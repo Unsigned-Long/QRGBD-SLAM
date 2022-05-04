@@ -48,9 +48,14 @@ void ReBulider::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus:
         {
             unsigned int d = depthImg.ptr<unsigned short>(v)[u];
             if (d == 0)
+            {
+                p[3 * u + 0] = 255;
+                p[3 * u + 1] = 255;
+                p[3 * u + 2] = 255;
                 continue;
+            }
             d /= 1000.0;
-            auto rgb = ns_clp::ColorPrj::project(d, 1.0, 20.0, false, 0, ns_clp::Color::red_yellow_green);
+            auto rgb = ns_clp::ColorPrj::project(d, 1.0, 20.0, true, 0, ns_clp::Color::red_yellow);
             p[3 * u + 0] = std::get<2>(rgb);
             p[3 * u + 1] = std::get<1>(rgb);
             p[3 * u + 2] = std::get<0>(rgb);
