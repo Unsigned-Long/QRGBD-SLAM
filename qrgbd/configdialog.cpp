@@ -12,11 +12,11 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent),
     this->connection();
     {
         // pre setting
-        this->_temp_seqPath = this->_seqPath = "/home/csl/dataset/tum/rgbd_dataset_freiburg1_desk";
-        this->_temp_colorImgPath = this->_colorImgPath = "/home/csl/dataset/tum/rgbd_dataset_freiburg1_desk/rgb";
-        this->_temp_depthImgPath = this->_depthImgPath = "/home/csl/dataset/tum/rgbd_dataset_freiburg1_desk/depth";
-        this->_temp_assoPath = this->_assoPath = "/home/csl/dataset/tum/rgbd_dataset_freiburg1_desk/fr1_desk.txt";
-        this->_temp_settingPath = this->_settingPath = "/home/csl/dataset/tum/rgbd_dataset_freiburg1_desk/TUM1.yaml";
+        this->_temp_seqPath = this->_seqPath = "/home/csl/dataset/2022-5-4-14-10-38";
+        this->_temp_colorImgPath = this->_colorImgPath = "/home/csl/dataset/2022-5-4-14-10-38/color";
+        this->_temp_depthImgPath = this->_depthImgPath = "/home/csl/dataset/2022-5-4-14-10-38/depth";
+        this->_temp_assoPath = this->_assoPath = "/home/csl/dataset/2022-5-4-14-10-38/info/associate.txt";
+        this->_temp_settingPath = this->_settingPath = "/home/csl/TempWork/rgbd-slam/config/rgbd.yaml";
         this->_temp_vocPath = this->_vocPath = "/home/csl/SoftWare/ORB_SLAM3/Vocabulary/ORBvoc.txt";
         this->_temp_classes = this->_classes = "/home/csl/TempWork/rgbd-slam/yolov4-learn/yolo/coco.names";
         this->_temp_modelConfig = this->_modelConfig = "/home/csl/TempWork/rgbd-slam/yolov4-learn/yolo/yolov4.cfg";

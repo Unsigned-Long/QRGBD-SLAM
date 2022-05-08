@@ -3,45 +3,50 @@
 #--------------------------------------------------------------------------------------------
 # Camera Parameters. Adjust them!
 #--------------------------------------------------------------------------------------------
+File.version: "1.0"
+
 Camera.type: "PinHole"
 
 # Camera calibration and distortion parameters (OpenCV) 
-Camera.fx: 609.628052
-Camera.fy: 609.485352
-Camera.cx: 636.722595
-Camera.cy: 370.105011
+Camera1.fx: 609.628052
+Camera1.fy: 609.485352
+Camera1.cx: 636.722595
+Camera1.cy: 370.105011
 
-Camera.k1: 0.521596
-Camera.k2: -2.556227
-Camera.k3: 1.445341
-Camera.p1: 0.000892
-Camera.p2: -0.000381
-
+Camera1.k1: 0.0
+Camera1.k2: 0.0
+Camera1.k3: 0.0
+Camera1.p1: 0.0
+Camera1.p2: 0.0
 
 Camera.width: 1280
 Camera.height: 720
 
 # Camera frames per second 
-Camera.fps: 15.0
-
-# IR projector baseline times fx (aprox.)
-Camera.bf: 30.6710083
+Camera.fps: 15
 
 # Color order of the images (0: BGR, 1: RGB. It is ignored if images are grayscale)
 Camera.RGB: 1
 
+# IR projector baseline times fx (aprox.)
+#Camera.bf: 30.6710083
+
 # Close/Far threshold. Baseline times.
-ThDepth: 40.0
+#ThDepth: 40.0
+
+# Close/Far threshold. Baseline times.
+Stereo.ThDepth: 40.0
+Stereo.b: 0.07732
 
 # Deptmap values factor 
-DepthMapFactor: 1000.0 # 1.0 for ROS_bag
+RGBD.DepthMapFactor: 1000.0 # 1.0 for ROS_bag
 
 #--------------------------------------------------------------------------------------------
 # ORB Parameters
 #--------------------------------------------------------------------------------------------
 
 # ORB Extractor: Number of features per image
-ORBextractor.nFeatures: 2000
+ORBextractor.nFeatures: 1000
 
 # ORB Extractor: Scale factor between levels in the scale pyramid 	
 ORBextractor.scaleFactor: 1.2
@@ -53,20 +58,20 @@ ORBextractor.nLevels: 8
 # Image is divided in a grid. At each cell FAST are extracted imposing a minimum response.
 # Firstly we impose iniThFAST. If no corners are detected we impose a lower value minThFAST
 # You can lower these values if your images have low contrast			
-ORBextractor.iniThFAST: 10
-ORBextractor.minThFAST: 5
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 7
 
 #--------------------------------------------------------------------------------------------
 # Viewer Parameters
 #--------------------------------------------------------------------------------------------
 Viewer.KeyFrameSize: 0.05
-Viewer.KeyFrameLineWidth: 1
+Viewer.KeyFrameLineWidth: 1.0
 Viewer.GraphLineWidth: 0.9
-Viewer.PointSize:2
+Viewer.PointSize: 2.0
 Viewer.CameraSize: 0.08
-Viewer.CameraLineWidth: 3
-Viewer.ViewpointX: 0
+Viewer.CameraLineWidth: 3.0
+Viewer.ViewpointX: 0.0
 Viewer.ViewpointY: -0.7
 Viewer.ViewpointZ: -1.8
-Viewer.ViewpointF: 500
+Viewer.ViewpointF: 500.0
 

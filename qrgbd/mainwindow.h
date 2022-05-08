@@ -3,7 +3,7 @@
 
 #include "configdialog.h"
 #include "helpdialog.h"
-#include "rebulider.h"
+#include "rebuilder.h"
 #include "recognizer.h"
 #include "slam.h"
 #include "timer.h"
@@ -45,6 +45,8 @@ public:
 
     void displayKeyFrames();
 
+    void createCVWins();
+
 signals:
     void signalCreateSlamSystem(ConfigDialog *config);
 
@@ -53,6 +55,10 @@ signals:
     void signalNewColorFrameToRecongnizer(cv::Mat srcImg);
 
     void signalNewDepthFrameToReBulider(cv::Mat colorImg, cv::Mat depthImg, Sophus::SE3f pose);
+
+    void signalInitRebuilder(ConfigDialog *cof);
+
+    void signalInitRecoginzer(ConfigDialog *cof);
 
 private:
     Ui::MainWindow *ui;
@@ -71,8 +77,8 @@ private:
     // thread to recongnize objects
     QThread _recogThread;
 
-    // rebulider
-    ReBulider *_rebuilder;
+    // rebuilder
+    Rebuilder *_rebuilder;
     // thread to run rebulider
     QThread _rebulidThread;
 
@@ -104,5 +110,9 @@ private:
 
     // the slam thread is running
     bool _isRunning = false;
+
+    // cv wins
+    const std::string _recognizerCVWinName = "Recognizer";
+    const std::string _rebuilderCVWinName = "ReBulider";
 };
 #endif // MAINWINDOW_H

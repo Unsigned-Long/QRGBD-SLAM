@@ -164,7 +164,12 @@ void Viewer::Run()
     mbFinished = false;
     mbStopped = false;
 
-    pangolin::CreateWindowAndBind("ORB-SLAM3: Map Viewer",1024,768);
+    pangolin::Params params;
+
+    params.Set<std::string>("default_font", "/usr/share/fonts/truetype/ubuntu/UbuntuMono-RI.ttf");
+    params.Set("default_font_size", 18);
+
+    pangolin::CreateWindowAndBind("ORB-SLAM3: Map Viewer",1024,768, params);
 
     // 3D Mouse handler requires depth testing to be enabled
     glEnable(GL_DEPTH_TEST);
@@ -173,9 +178,12 @@ void Viewer::Run()
     glEnable (GL_BLEND);
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    pangolin::CreatePanel("menu").SetBounds(0.0,1.0,0.0,pangolin::Attach::Pix(175));
-    pangolin::Var<bool> menuFollowCamera("menu.Follow Camera",false,true);
-    pangolin::Var<bool> menuCamView("menu.Camera View",false,false);
+    pangolin::CreatePanel("menu")
+    .SetBounds(0.0, 1.0, 0.0, pangolin::Attach::Pix(200))
+    .SetLayout(pangolin::Layout::LayoutEqualVertical);
+
+    pangolin::Var<bool> menuFollowCamera("menu.Follow Camera",true,true);
+    pangolin::Var<bool> menuCamView("menu.Camera View", true, false);
     pangolin::Var<bool> menuTopView("menu.Top View",false,false);
     // pangolin::Var<bool> menuSideView("menu.Side View",false,false);
     pangolin::Var<bool> menuShowPoints("menu.Show Points",true,true);
@@ -188,7 +196,7 @@ void Viewer::Run()
     pangolin::Var<bool> menuStepByStep("menu.Step By Step",false,true);  // false, true
     pangolin::Var<bool> menuStep("menu.Step",false,false);
 
-    pangolin::Var<bool> menuShowOptLba("menu.Show LBA opt", false, true);
+    pangolin::Var<bool> menuShowOptLba("menu.Show LBA Opt", true, true);
     // Define Camera Render Object (for view / scene browsing)
     pangolin::OpenGlRenderState s_cam(
                 pangolin::ProjectionMatrix(1024,768,mViewpointF,mViewpointF,512,389,0.1,1000),
@@ -221,7 +229,6 @@ void Viewer::Run()
     cout << "Starting the Viewer" << endl;
     while(!pangolin::ShouldQuit())
     {
-      std::cout << "pangolin drawing" << std::endl;
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       mpMapDrawer->GetCurrentOpenGLCameraMatrix(Twc, Ow);

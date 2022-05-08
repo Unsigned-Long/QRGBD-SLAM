@@ -4,34 +4,41 @@
 #include "configdialog.h"
 #include "yolo.h"
 #include "yolo_v2_class.hpp"
-#include <QEvent>
+#include <QGridLayout>
 #include <QLabel>
-#include <QObject>
+#include <QWidget>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
+
+namespace Ui
+{
+    class Recognizer;
+}
 
 class Recognizer : public QObject
 {
     Q_OBJECT
-public:
-    explicit Recognizer(QLabel *label, ConfigDialog *config, QObject *parent = nullptr);
 
-    bool eventFilter(QObject *object, QEvent *event) override;
+public:
+    explicit Recognizer(QObject *parent = nullptr);
+    ~Recognizer();
+
 public slots:
     void processNewColorFrame(cv::Mat srcImg);
+
+    void init(ConfigDialog *cof);
 
 signals:
     void signalProcessColorFrameFinished();
 
 private:
-    QLabel *_label;
-    ConfigDialog *_config;
+    Ui::Recognizer *ui;
 
     std::vector<std::string> _classesVec;
     std::shared_ptr<Detector> _detector;
 
 public:
-    bool _fileLoadFinished;
+    const std::string _cvWinName = "Recognizer";
 };
 
 #endif // RECOGNIZER_H

@@ -17,10 +17,9 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 # customer ---
 add_definitions(-w)
 
-find_package(OpenCV REQUIRED)
+find_package(OpenCV 4.5 REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Pangolin REQUIRED)
-find_package(yaml-cpp)
 
 include_directories(
     ${OpenCV_INCLUDE_DIRS}
@@ -32,7 +31,25 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/../ORB_SLAM3/Thirdparty/g2o
     ${CMAKE_SOURCE_DIR}/../ORB_SLAM3/Thirdparty/Sophus
     ${CMAKE_SOURCE_DIR}/../ORB_SLAM3/Thirdparty/DBoW2
-    ${YAML_CPP_INCLUDE_DIRS}
+
+    /usr/local/include
+    /usr/include/gtk-2.0
+    /usr/lib/x86_64-linux-gnu/gtk-2.0/include
+    /usr/include/pango-1.0
+    /usr/include/atk-1.0
+    /usr/include/gdk-pixbuf-2.0
+    /usr/include/libmount
+    /usr/include/blkid
+    /usr/include/pango-1.0
+    /usr/include/fribidi
+    /usr/include/cairo
+    /usr/include/pixman-1
+    /usr/include/harfbuzz
+    /usr/include/glib-2.0
+    /usr/lib/x86_64-linux-gnu/glib-2.0/include
+    /usr/include/uuid
+    /usr/include/freetype2
+    /usr/include/libpng16
 )
 # customer ---
 
@@ -42,6 +59,7 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
         # customer ---
+
         helpdialog.cpp
         helpdialog.h
         helpdialog.ui
@@ -53,11 +71,11 @@ set(PROJECT_SOURCES
         slam.cpp
         slam.h
 
-        recognizer.cpp
-        recognizer.h
+        rebuilder.h
+        rebuilder.cpp
 
-        rebulider.cpp
-        rebulider.h
+        recognizer.h
+        recognizer.cpp
 
         timer.h
 
@@ -68,7 +86,11 @@ set(PROJECT_SOURCES
         yolo_v2_class.hpp
         yolo.cpp
 
+
         csv.h
+
+        embed.cpp
+        embed.h
 
         # customer ---
 )
@@ -110,7 +132,22 @@ target_link_libraries(qrgbd PRIVATE
     -lboost_serialization
     -lcrypto
     ${CMAKE_SOURCE_DIR}/../yolov4-learn/lib/libdarknet.so
-    ${YAML_CPP_LIBRARIES}
+
+    pthread
+    gtk-x11-2.0
+    gdk-x11-2.0
+    pangocairo-1.0
+    atk-1.0
+    cairo
+    gdk_pixbuf-2.0
+    gio-2.0
+    pangoft2-1.0
+    pango-1.0
+    gobject-2.0
+    glib-2.0
+    harfbuzz
+    fontconfig
+    freetype
 )
 # customer ---
 

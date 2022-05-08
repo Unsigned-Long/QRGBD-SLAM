@@ -7,7 +7,7 @@ Slam::Slam(QObject *parent)
 void Slam::shutdown()
 {
     this->_slamSystem->Shutdown();
-    this->_slamSystem->mpViewer->RequestFinish();
+    //    this->_slamSystem->mpViewer->RequestFinish();
     return;
 }
 
@@ -18,7 +18,7 @@ std::shared_ptr<ORB_SLAM3::System> Slam::getSlamSystem()
 
 void Slam::createSlamSystem(ConfigDialog *config)
 {
-    qDebug() << "slam thread: " << QThread::currentThread();
+    qDebug() << "Slam thread: " << QThread::currentThread();
 
     this->_config = config;
 
