@@ -15,11 +15,13 @@ MainWindow::MainWindow(QWidget *parent)
     this->init();
     // build connections
     this->connection();
+    // create opencv windows
     this->createCVWins();
 }
 
 MainWindow::~MainWindow()
 {
+    // delete operations
     delete this->_slam;
     delete this->_rebuilder;
     delete this->_recognizer;
@@ -189,12 +191,13 @@ void MainWindow::connection()
                 ui->btn_run->setEnabled(false);
                 ui->btn_config->setEnabled(false);
 
+                // init
                 emit this->signalInitRebuilder(&this->_configDig);
                 emit this->signalInitRecoginzer(&this->_configDig);
                 emit this->signalCreateSlamSystem(&this->_configDig);
 
                 // sho message
-                this->statusBar()->showMessage("creating a new slam sysstem.");
+                this->statusBar()->showMessage("creating a new slam system.");
             });
     // [5] finish the frame
     connect(this->_slam, &Slam::processNewFrameFinished,
@@ -208,6 +211,7 @@ void MainWindow::connection()
                 double ttrack = this->_timing.last_elapsed<ns_timer::DurationType::S>();
                 _vTimesTrack[this->_curFrameIdx] = ttrack;
 
+                // compute gather cost time
                 double T = 0;
                 if (this->_curFrameIdx < _nImages - 1)
                 {
@@ -223,6 +227,7 @@ void MainWindow::connection()
                          << ", 'track delay':" << QString::number(ttrack, 'f', 5)
                          << ", 'tframe':" << QString::number(_tframe, 'f', 5);
 
+                // next frame
                 if (ttrack < T)
                     this->_timer.singleShot(T - ttrack, this, &MainWindow::processNewFrame);
                 else
@@ -287,6 +292,8 @@ void MainWindow::connection()
 void MainWindow::init()
 {
     qDebug() << "main thread: " << QThread::currentThread();
+
+    this->statusBar()->setFont(QFont("Ubuntu Mono", -1, -1, true));
 
     this->_slam = new Slam();
     this->_slam->moveToThread(&this->_slamThread);
@@ -544,15 +551,17 @@ void MainWindow::displayKeyFrames()
 
 void MainWindow::createCVWins()
 {
+    // create the first window
     auto cvWin = cvEmbedWindow(this->_rebuilder->_cvWinName);
     ui->layout_rebuilder->addWidget(cvWin);
-    auto img = cv::imread("../ic.png", cv::IMREAD_UNCHANGED);
+    auto img = cv::imread("../img/ic.png", cv::IMREAD_UNCHANGED);
     cv::imshow(this->_rebuilder->_cvWinName.c_str(), img);
 
+    // create the second window
     QTimer::singleShot(0, this, [=]() {
         auto cvWin = cvEmbedWindow(this->_recognizer->_cvWinName);
         ui->layout_recognizer->addWidget(cvWin);
-        auto img = cv::imread("../ic.png", cv::IMREAD_UNCHANGED);
+        auto img = cv::imread("../img/ic.png", cv::IMREAD_UNCHANGED);
         cv::imshow(this->_recognizer->_cvWinName.c_str(), img);
     });
 }

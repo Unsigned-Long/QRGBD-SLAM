@@ -15,6 +15,12 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
 # customer ---
+file(GLOB_RECURSE QRC_SOURCE_FILES ${CMAKE_SOURCE_DIR}/resource.qrc)
+
+qt6_add_resources(QRC_FILES ${QRC_SOURCE_FILES})
+
+source_group("Resource Files" FILES ${QRC_SOURCE_FILES})
+
 add_definitions(-w)
 
 find_package(OpenCV 4.5 REQUIRED)
@@ -51,6 +57,7 @@ include_directories(
     /usr/include/freetype2
     /usr/include/libpng16
 )
+
 # customer ---
 
 set(PROJECT_SOURCES
@@ -91,6 +98,8 @@ set(PROJECT_SOURCES
 
         embed.cpp
         embed.h
+
+        ${QRC_FILES}
 
         # customer ---
 )

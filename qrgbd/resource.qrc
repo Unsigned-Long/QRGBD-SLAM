@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../img/android.png</file>
+        <file>../img/ic.png</file>
+        <file>../img/ros-server.png</file>
+        <file>../img/qrgbd.png</file>
+    </qresource>
+</RCC>

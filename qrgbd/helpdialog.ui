@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>647</width>
-    <height>488</height>
+    <width>807</width>
+    <height>545</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -94,7 +94,7 @@
           <family>Ubuntu Mono</family>
           <pointsize>14</pointsize>
           <italic>true</italic>
-          <bold>false</bold>
+          <bold>true</bold>
          </font>
         </property>
         <property name="frameShape">
@@ -104,7 +104,7 @@
          <number>1</number>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>1</number>
         </property>
         <property name="tabSpacing">
          <number>6</number>
@@ -114,8 +114,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>611</width>
-           <height>317</height>
+           <width>771</width>
+           <height>374</height>
           </rect>
          </property>
          <attribute name="label">
@@ -123,7 +123,26 @@
          </attribute>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">
-           <widget class="QTextBrowser" name="textBrowser"/>
+           <widget class="QTextBrowser" name="textBrowser">
+            <property name="html">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu Mono'; font-size:14pt; font-weight:700; font-style:italic;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;    &lt;/span&gt;&lt;span style=&quot; color:#ef2929;&quot;&gt;Slam&lt;/span&gt;&lt;span style=&quot; font-weight:400;&quot;&gt; (simultaneous localization and mapping), also known as &lt;/span&gt;&lt;span style=&quot; color:#ef2929;&quot;&gt;CML&lt;/span&gt;&lt;span style=&quot; font-weight:400;&quot;&gt; (concurrent mapping and localization), real-time positioning and map construction, or concurrent mapping and positioning. The problem can be described as: put a robot into an unknown position in an unknown environment, and whether there is a way for the robot to gradually draw a complete map of the environment while moving. The so-called a consistent map refers to walking to every corner of the room without obstacles.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;    &lt;/span&gt;&lt;span style=&quot; color:#ef2929;&quot;&gt;V-SLAM&lt;/span&gt;&lt;span style=&quot; font-weight:400;&quot;&gt; is a branch of slam. It takes the camera as the data acquisition equipment to locate and build maps in real time through relevant image and estimation optimization algorithms. Relying on a special camera rgbd camera, this project realizes slam software based on RGB image and depth image based on &lt;/span&gt;ORB-SLAM&lt;span style=&quot; font-weight:400;&quot;&gt; algorithm library, &lt;/span&gt;Yolo&lt;span style=&quot; font-weight:400;&quot;&gt; image recognition library and &lt;/span&gt;Open3D&lt;span style=&quot; font-weight:400;&quot;&gt; visualization library. It has the functions of location, scene recognition and scene reconstruction.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;    You can find(&amp;quot;git clone&amp;quot;) our project on GitHub:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;    [1] &lt;/span&gt;QRGBD-SLAM&lt;span style=&quot; font-weight:400;&quot;&gt;: &lt;/span&gt;&lt;a href=&quot;https://github.com/Unsigned-Long/QRGBD-SLAM&quot;&gt;&lt;span style=&quot; font-weight:400; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/Unsigned-Long/QRGBD-SLAM&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;        Desktop software for processing image data and slam. That is, the software currently in use.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/img/qrgbd.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;    [2] &lt;/span&gt;Kinect-Controller&lt;span style=&quot; font-weight:400;&quot;&gt;:  &lt;/span&gt;&lt;a href=&quot;https://github.com/Unsigned-Long/kinect-controller&quot;&gt;&lt;span style=&quot; font-weight:400; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/Unsigned-Long/kinect-controller&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;        A data acquisition and control device based on Android, which communicates with the host through WiFi.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/img/android.png&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;    [3] &lt;/span&gt;ROS-Kinect-Server:&lt;span style=&quot; font-weight:400;&quot;&gt; &lt;/span&gt;&lt;a href=&quot;https://github.com/Unsigned-Long/Ros-Kinect-Server&quot;&gt;&lt;span style=&quot; font-weight:400; text-decoration: underline; color:#0000ff;&quot;&gt;https://github.com/Unsigned-Long/Ros-Kinect-Server&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;       It exists on the host (Ubuntu) and controls the server of Kinect camera through ROS, which is controlled by Android client.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/img/ros-server.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -132,8 +151,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>611</width>
-           <height>317</height>
+           <width>771</width>
+           <height>374</height>
           </rect>
          </property>
          <attribute name="label">
@@ -141,7 +160,38 @@
          </attribute>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="0">
-           <widget class="QTextBrowser" name="textBrowser_2"/>
+           <widget class="QTextBrowser" name="textBrowser_2">
+            <property name="html">
+             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu Mono'; font-size:14pt; font-weight:700; font-style:italic;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#fb8b00;&quot;&gt;{&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;developers&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#ad7fa8;&quot;&gt;[&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;    &lt;span style=&quot; color:#729fcf;&quot;&gt;{&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;shlChen&amp;quot;&lt;/span&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;e-mail&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;3079625093@qq.com&amp;quot;&lt;/span&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;school&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;Wuhan University&amp;quot;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;    &lt;span style=&quot; color:#729fcf;&quot;&gt;}&lt;/span&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;    &lt;span style=&quot; color:#729fcf;&quot;&gt;{&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;zrWang&amp;quot;&lt;/span&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;e-mail&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;1298036718@qq.com&amp;quot;&lt;/span&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;school&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;Wuhan University&amp;quot;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;    &lt;span style=&quot; color:#729fcf;&quot;&gt;}&lt;/span&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;    &lt;span style=&quot; color:#729fcf;&quot;&gt;{&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;yhZhao&amp;quot;&lt;/span&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;e-mail&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;1163810660@qq.com&amp;quot;&lt;/span&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;school&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;Wuhan University&amp;quot;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;    &lt;span style=&quot; color:#729fcf;&quot;&gt;}&lt;/span&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;    &lt;span style=&quot; color:#729fcf;&quot;&gt;{&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;name&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;qfWang&amp;quot;&lt;/span&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;e-mail&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;871816589@qq.com&amp;quot;&lt;/span&gt;,&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;      &lt;span style=&quot; color:#ef2929;&quot;&gt;&amp;quot;school&amp;quot;&lt;/span&gt;: &lt;span style=&quot; color:#4e9a06;&quot;&gt;&amp;quot;Wuhan University&amp;quot;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;    &lt;span style=&quot; color:#729fcf;&quot;&gt;}&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  &lt;span style=&quot; color:#ad7fa8;&quot;&gt;]&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#fb8b00;&quot;&gt;}&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -150,8 +200,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>611</width>
-           <height>317</height>
+           <width>771</width>
+           <height>374</height>
           </rect>
          </property>
          <attribute name="label">
@@ -159,64 +209,7 @@
          </attribute>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
-           <widget class="QToolBox" name="toolBox_2">
-            <property name="font">
-             <font>
-              <family>Ubuntu Mono</family>
-              <pointsize>14</pointsize>
-              <italic>true</italic>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>1</number>
-            </property>
-            <widget class="QWidget" name="detail1">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>98</width>
-               <height>88</height>
-              </rect>
-             </property>
-             <attribute name="label">
-              <string>a. detail1</string>
-             </attribute>
-             <layout class="QGridLayout" name="gridLayout_6">
-              <item row="0" column="0">
-               <widget class="QTextBrowser" name="textBrowser_3"/>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="detail2">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>593</width>
-               <height>233</height>
-              </rect>
-             </property>
-             <attribute name="label">
-              <string>b. detail2</string>
-             </attribute>
-             <layout class="QGridLayout" name="gridLayout_7">
-              <item row="0" column="0">
-               <widget class="QTextBrowser" name="textBrowser_4">
-                <property name="font">
-                 <font>
-                  <family>Ubuntu Mono</family>
-                  <pointsize>14</pointsize>
-                  <italic>true</italic>
-                  <bold>false</bold>
-                 </font>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </widget>
+           <widget class="QTextBrowser" name="textBrowser_3"/>
           </item>
          </layout>
         </widget>
