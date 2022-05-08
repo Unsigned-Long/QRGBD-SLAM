@@ -4,5 +4,6 @@
         <file>../img/ic.png</file>
         <file>../img/ros-server.png</file>
         <file>../img/qrgbd.png</file>
+        <file>../img/ic.ico</file>
     </qresource>
 </RCC>

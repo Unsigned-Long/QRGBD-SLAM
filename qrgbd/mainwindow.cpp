@@ -554,14 +554,14 @@ void MainWindow::createCVWins()
     // create the first window
     auto cvWin = cvEmbedWindow(this->_rebuilder->_cvWinName);
     ui->layout_rebuilder->addWidget(cvWin);
-    auto img = cv::imread("../img/ic.png", cv::IMREAD_UNCHANGED);
+    auto img = cv::imread("../img/depth.png", cv::IMREAD_UNCHANGED);
     cv::imshow(this->_rebuilder->_cvWinName.c_str(), img);
 
     // create the second window
     QTimer::singleShot(0, this, [=]() {
         auto cvWin = cvEmbedWindow(this->_recognizer->_cvWinName);
         ui->layout_recognizer->addWidget(cvWin);
-        auto img = cv::imread("../img/ic.png", cv::IMREAD_UNCHANGED);
+        auto img = cv::imread("../img/recognizer.png", cv::IMREAD_UNCHANGED);
         cv::imshow(this->_recognizer->_cvWinName.c_str(), img);
     });
 }

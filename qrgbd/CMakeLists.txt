@@ -15,6 +15,8 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
 # customer ---
+
+# add resource file
 file(GLOB_RECURSE QRC_SOURCE_FILES ${CMAKE_SOURCE_DIR}/resource.qrc)
 
 qt6_add_resources(QRC_FILES ${QRC_SOURCE_FILES})
