@@ -26,6 +26,8 @@ public slots:
     void processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus::SE3f pose);
 
     void init(ConfigDialog *config);
+signals:
+    void signalProcessNewFrameFinished(cv::Mat img);
 
 private:
     Ui::Rebuilder *ui;

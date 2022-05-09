@@ -277,12 +277,18 @@ void MainWindow::connection()
     connect(this, &MainWindow::signalNewColorFrameToRecongnizer,
             this->_recognizer, &Recognizer::processNewColorFrame);
     // recognize finished
-    connect(this->_recognizer, &Recognizer::signalProcessColorFrameFinished,
-            this, [=]() {
+    connect(this->_recognizer, &Recognizer::signalProcessNewFrameFinished,
+            this, [=](cv::Mat img) {
+                cv::imshow(this->_recognizer->_cvWinName.c_str(), img);
                 if (this->_isRunning)
                 {
                     emit this->signalNewColorFrameToRecongnizer(_imRGB);
                 }
+            });
+    // rebuild finished
+    connect(this->_rebuilder, &Rebuilder::signalProcessNewFrameFinished,
+            this, [=](cv::Mat img) {
+                cv::imshow(this->_rebuilder->_cvWinName.c_str(), img);
             });
     // new depth frame
     connect(this, &MainWindow::signalNewDepthFrameToReBulider,

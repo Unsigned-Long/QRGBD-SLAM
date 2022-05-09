@@ -4,7 +4,7 @@ find_package(OpenCV REQUIRED)
 
 project(yolov4 VERSION 1.0)
 
-set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "Release")
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 

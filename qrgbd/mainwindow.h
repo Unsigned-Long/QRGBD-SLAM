@@ -110,9 +110,5 @@ private:
 
     // the slam thread is running
     bool _isRunning = false;
-
-    // cv wins
-    const std::string _recognizerCVWinName = "Recognizer";
-    const std::string _rebuilderCVWinName = "ReBulider";
 };
 #endif // MAINWINDOW_H

@@ -23,9 +23,7 @@ void Recognizer::processNewColorFrame(cv::Mat srcImg)
     yoloDetector(dstImg, this->_classesVec, *(this->_detector));
 
     // show image
-    cv::imshow(this->_cvWinName.c_str(), dstImg);
-
-    emit this->signalProcessColorFrameFinished();
+    emit this->signalProcessNewFrameFinished(dstImg);
 }
 
 void Recognizer::init(ConfigDialog *cof)

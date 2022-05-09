@@ -29,7 +29,7 @@ public slots:
     void init(ConfigDialog *cof);
 
 signals:
-    void signalProcessColorFrameFinished();
+    void signalProcessNewFrameFinished(cv::Mat img);
 
 private:
     Ui::Recognizer *ui;

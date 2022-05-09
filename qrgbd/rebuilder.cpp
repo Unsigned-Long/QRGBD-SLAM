@@ -43,7 +43,7 @@ void Rebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus:
     }
 
     // show image
-    cv::imshow(this->_cvWinName.c_str(), color);
+    emit this->signalProcessNewFrameFinished(color);
 }
 
 void Rebuilder::init(ConfigDialog *cof)
