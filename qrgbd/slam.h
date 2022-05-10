@@ -1,6 +1,8 @@
 #ifndef SLAMTHREAD_H
 #define SLAMTHREAD_H
 
+// attention here
+#undef HAVE_CUDA
 #include "System.h"
 #include "configdialog.h"
 #include <QDebug>

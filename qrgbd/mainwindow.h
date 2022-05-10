@@ -45,7 +45,7 @@ public:
 
     void displayKeyFrames();
 
-    void createCVWins();
+    void create_CV_PCL_Wins();
 
 signals:
     void signalCreateSlamSystem(ConfigDialog *config);
@@ -110,5 +110,11 @@ private:
 
     // the slam thread is running
     bool _isRunning = false;
+
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr allCloudPts;
+
+    pcl::visualization::PCLVisualizer::Ptr viewer;
+
+    std::size_t cloudIdx;
 };
 #endif // MAINWINDOW_H

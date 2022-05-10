@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     // build connections
     this->connection();
     // create opencv windows
-    this->createCVWins();
+    this->create_CV_PCL_Wins();
 }
 
 MainWindow::~MainWindow()
@@ -287,8 +287,41 @@ void MainWindow::connection()
             });
     // rebuild finished
     connect(this->_rebuilder, &Rebuilder::signalProcessNewFrameFinished,
-            this, [=](cv::Mat img) {
+            this, [=](cv::Mat img, pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, Sophus::SE3f Tcw) {
                 cv::imshow(this->_rebuilder->_cvWinName.c_str(), img);
+
+                if (Tcw.log() == Sophus::SE3f().log())
+                {
+                    viewer->removeAllPointClouds();
+                    cloudIdx = 0;
+                    viewer->setCameraPosition(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+                    viewer->spinOnce();
+                    return;
+                }
+                auto Twc = Tcw.inverse();
+                auto quat = Twc.unit_quaternion();
+                auto trans = Twc.translation();
+
+                // point cloud
+                viewer->addPointCloud(frameCloud, std::to_string(cloudIdx++));
+                Eigen::Vector3f pos(0.0f, 0.0f, -3.0f);
+                Eigen::Vector3f view(0.0f, 0.0f, 0.0f);
+                Eigen::Vector3f up(0.0f, -1.0f, -3.0f);
+                pos = Twc * pos;
+                view = Twc * view;
+                up = Twc * up;
+                up(0) = up(0) - pos(0), up(1) = up(1) - pos(1), up(2) = up(2) - pos(2);
+                viewer->setCameraPosition(pos(0), pos(1), pos(2),
+                                          view(0), view(1), view(2),
+                                          up(0), up(1), up(2));
+
+                // Camera coord
+                Eigen::Isometry3f coord(quat);
+                coord.pretranslate(trans);
+                viewer->removeCoordinateSystem("Camera");
+                viewer->addCoordinateSystem(0.2, Eigen::Affine3f(coord.affine()), "Camera");
+
+                viewer->spinOnce();
             });
     // new depth frame
     connect(this, &MainWindow::signalNewDepthFrameToReBulider,
@@ -555,7 +588,7 @@ void MainWindow::displayKeyFrames()
     }
 }
 
-void MainWindow::createCVWins()
+void MainWindow::create_CV_PCL_Wins()
 {
     // create the first window
     auto cvWin = cvEmbedWindow(this->_rebuilder->_cvWinName);
@@ -570,4 +603,14 @@ void MainWindow::createCVWins()
         auto img = cv::imread("../img/recognizer.png", cv::IMREAD_UNCHANGED);
         cv::imshow(this->_recognizer->_cvWinName.c_str(), img);
     });
+
+    this->allCloudPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+    cloudIdx = 0;
+    this->viewer = std::make_shared<pcl::visualization::PCLVisualizer>("PointCloud");
+    this->viewer->setSize(1000, 640);
+    this->viewer->setBackgroundColor(0.9f, 0.9f, 0.9f);
+
+    Eigen::Isometry3f origin(Eigen::Quaternionf::Identity());
+    origin.pretranslate(Eigen::Vector3f::Zero());
+    this->viewer->addCoordinateSystem(0.5, Eigen::Affine3f(origin.affine()), "origin");
 }
