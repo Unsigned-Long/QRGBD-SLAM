@@ -1,6 +1,5 @@
 /build-qrgbd-Desktop_Qt_6_1_3_GCC_64bit-Debug
 /build-qrgbd-Desktop_Qt_6_1_3_GCC_64bit-Release
-/data/*
 /test/build
 /yolov4-learn/yolo/yolov4.weights
 /ORB_SLAM3/Vocabulary/ORBvoc.txt

@@ -58,12 +58,10 @@ void Rebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus:
         }
     }
 
-    std::cout << "frameCloud->size(): " << frameCloud->size() << std::endl;
     pcl::VoxelGrid<pcl::PointXYZRGB> filter;
     filter.setLeafSize(0.02, 0.02, 0.02);
     filter.setInputCloud(frameCloud);
     filter.filter(*frameCloud);
-    std::cout << "frameCloud->size(): " << frameCloud->size() << std::endl;
 
     // show image and point cloud
     emit this->signalProcessNewFrameFinished(color, frameCloud, Tcw);
