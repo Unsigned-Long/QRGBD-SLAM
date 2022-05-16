@@ -6,17 +6,29 @@
 #include <opencv2/highgui.hpp>
 
 Rebuilder::Rebuilder(QObject *parent)
-    : QObject(parent)
-{
+    : QObject(parent) {
 }
 
-Rebuilder::~Rebuilder()
-{
+Rebuilder::~Rebuilder() {
     delete ui;
 }
 
-void Rebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus::SE3f Tcw)
-{
+void Rebuilder::changeToInterMode() {
+    this->_pcl_visual->_mode = PCL_VISUAL_MODE::INTERACTIVE_MODE;
+    emit this->signalPCLShowPointCloud(nullptr, Sophus::SE3f());
+}
+
+void Rebuilder::changeToRenderMode() {
+    this->_pcl_visual->_mode = PCL_VISUAL_MODE::RENDER_MODE;
+    auto tempPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+    tempPts->resize(this->_pts->size());
+    std::copy(this->_pts->cbegin(), this->_pts->cend(), tempPts->begin());
+    emit this->signalPCLShowPointCloud(tempPts, this->_curTcw);
+    this->_pts->clear();
+    this->_pcl_visual_need_data = false;
+}
+
+void Rebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus::SE3f Tcw) {
 
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud(new pcl::PointCloud<pcl::PointXYZRGB>());
     frameCloud->reserve(depthImg.rows * depthImg.cols * 0.9);
@@ -27,14 +39,11 @@ void Rebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus:
     auto quat = Twc.unit_quaternion();
     auto trans = Twc.translation();
 
-    for (int v = 0; v < depthImg.rows; v++)
-    {
+    for (int v = 0; v < depthImg.rows; v++) {
         auto colorPtr = color.ptr<uchar>(v);
-        for (int u = 0; u < depthImg.cols; u++)
-        {
+        for (int u = 0; u < depthImg.cols; u++) {
             unsigned int d = depthImg.ptr<unsigned short>(v)[u];
-            if (d == 0)
-            {
+            if (d == 0) {
                 colorPtr[3 * u + 0] = 255;
                 colorPtr[3 * u + 1] = 255;
                 colorPtr[3 * u + 2] = 255;
@@ -64,11 +73,23 @@ void Rebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus:
     filter.filter(*frameCloud);
 
     // show image and point cloud
-    emit this->signalProcessNewFrameFinished(color, frameCloud, Tcw);
+    emit this->signalProcessNewFrameFinished(color);
+
+    this->_pts->resize(this->_pts->size() + frameCloud->size());
+    std::copy(frameCloud->cbegin(), frameCloud->cend(), this->_pts->end() - frameCloud->size());
+    this->_curTcw = Tcw;
+
+    if (this->_pcl_visual_need_data) {
+        auto tempPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+        tempPts->resize(this->_pts->size());
+        std::copy(this->_pts->cbegin(), this->_pts->cend(), tempPts->begin());
+        emit this->signalPCLShowPointCloud(tempPts, this->_curTcw);
+        this->_pts->clear();
+        this->_pcl_visual_need_data = false;
+    }
 }
 
-void Rebuilder::init(ConfigDialog *cof)
-{
+void Rebuilder::init(ConfigDialog *cof) {
     qDebug() << "Rebuilder thread: " << QThread::currentThread();
 
     cv::FileStorage config(cof->_settingPath.toStdString(), cv::FileStorage::READ);
@@ -78,4 +99,14 @@ void Rebuilder::init(ConfigDialog *cof)
     config["Camera1.cy"] >> this->cy;
     config["RGBD.DepthMapFactor"] >> this->depthScale;
     config.release();
+    this->_pts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
+    // pcl visual
+    this->_pcl_visual = std::make_shared<PCLVisual>();
+    connect(this, &Rebuilder::signalPCLShowPointCloud, this->_pcl_visual.get(), &PCLVisual::showPointCloud);
+    connect(this->_pcl_visual.get(), &PCLVisual::signalShowPtsFinished, this, [=]() {
+        this->_pcl_visual_need_data = true;
+    });
+
+    this->_pcl_visual->moveToThread(&this->_thread);
+    this->_thread.start();
 }

@@ -105,6 +105,12 @@ set(PROJECT_SOURCES
   embed.cpp
   embed.h
 
+  optimize.h
+  optimize.cpp
+
+  pcl_visual.cpp
+  pcl_visual.h
+
   ${QRC_FILES}
 
   # customer ---

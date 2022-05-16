@@ -7,8 +7,7 @@
 #include "embed.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow)
-{
+    : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     this->setWindowTitle("RGB-D Slam Handler");
     // create variables
@@ -16,11 +15,10 @@ MainWindow::MainWindow(QWidget *parent)
     // build connections
     this->connection();
     // create opencv windows
-    this->create_CV_PCL_Wins();
+    this->createCVWins();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     // delete operations
     delete this->_slam;
     delete this->_rebuilder;
@@ -28,8 +26,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::connection()
-{
+void MainWindow::connection() {
     // for start button
     connect(ui->btn_start, &QPushButton::clicked,
             this, [=]() {
@@ -48,15 +45,13 @@ void MainWindow::connection()
     // for save button
     connect(ui->btn_save, &QPushButton::clicked,
             this, [=]() {
-                if (ui->tabW_mappoint->rowCount() == 0 && ui->tabW_keyframes->rowCount() == 0)
-                {
+                if (ui->tabW_mappoint->rowCount() == 0 && ui->tabW_keyframes->rowCount() == 0) {
                     // no data
                     QMessageBox::information(this, "Attention", "No data to save!");
                     return;
                 }
                 auto path = QFileDialog::getExistingDirectory(this, "save data path", QDir::currentPath());
-                if (path.isEmpty())
-                {
+                if (path.isEmpty()) {
                     return;
                 }
 
@@ -73,10 +68,8 @@ void MainWindow::connection()
 
                 mapPointsFile->writeLine(',', "id", "X(M)", "Y(M)", "Z(M)");
 
-                for (auto mpPtr : mapPoints)
-                {
-                    if (mpPtr != nullptr)
-                    {
+                for (auto mpPtr : mapPoints) {
+                    if (mpPtr != nullptr) {
                         // write data
                         auto pos = mpPtr->GetWorldPos();
                         mapPointsFile->writeLine(',', mpPtr->mnId, pos(0), pos(1), pos(2));
@@ -84,10 +77,8 @@ void MainWindow::connection()
                 }
                 keyFramesFile->writeLine(',', "id", "Qx", "Qy", "Qz", "Qw", "X(M)", "Y(M)", "Z(M)");
 
-                for (auto framePtr : keyFrames)
-                {
-                    if (framePtr != nullptr)
-                    {
+                for (auto framePtr : keyFrames) {
+                    if (framePtr != nullptr) {
                         // write data
                         auto rot = Eigen::Quaternionf(framePtr->GetRotation()).normalized();
                         auto trans = framePtr->GetTranslation();
@@ -142,8 +133,7 @@ void MainWindow::connection()
     connect(ui->btn_run, &QPushButton::clicked,
             this, [=]() {
                 // Check whether the configuration is complete
-                if (!this->_configDig.isSetted())
-                {
+                if (!this->_configDig.isSetted()) {
                     QMessageBox::information(
                         this,
                         "Info",
@@ -159,16 +149,13 @@ void MainWindow::connection()
                 this->_vTimesTrack.resize(_nImages);
 
                 // if no images or quantity does not correspond, don't process
-                if (this->_vstrImageFilenamesRGB.empty())
-                {
+                if (this->_vstrImageFilenamesRGB.empty()) {
                     QMessageBox::information(
                         this,
                         "Info",
                         "No images found in provided path.");
                     return;
-                }
-                else if (this->_vstrImageFilenamesD.size() != this->_vstrImageFilenamesRGB.size())
-                {
+                } else if (this->_vstrImageFilenamesD.size() != this->_vstrImageFilenamesRGB.size()) {
                     QMessageBox::information(
                         this,
                         "Info",
@@ -190,6 +177,7 @@ void MainWindow::connection()
                 // some settings for buttons
                 ui->btn_run->setEnabled(false);
                 ui->btn_config->setEnabled(false);
+                ui->btn_continue->setEnabled(false);
 
                 // init
                 emit this->signalInitRebuilder(&this->_configDig);
@@ -213,12 +201,9 @@ void MainWindow::connection()
 
                 // compute gather cost time
                 double T = 0;
-                if (this->_curFrameIdx < _nImages - 1)
-                {
+                if (this->_curFrameIdx < _nImages - 1) {
                     T = _vTimestamps[this->_curFrameIdx + 1] - _tframe;
-                }
-                else if (this->_curFrameIdx > 0)
-                {
+                } else if (this->_curFrameIdx > 0) {
                     T = _tframe - _vTimestamps[this->_curFrameIdx - 1];
                 }
 
@@ -239,28 +224,31 @@ void MainWindow::connection()
     // stop
     connect(ui->btn_stop, &QPushButton::clicked,
             this, [=]() {
-                if (!this->_isRunning)
-                {
+                if (!this->_isRunning) {
                     return;
                 }
                 this->_isRunning = false;
+                ui->btn_continue->setEnabled(true);
+                ui->btn_stop->setEnabled(false);
+                this->_rebuilder->changeToInterMode();
 
                 this->statusBar()->showMessage("process stoped.");
             });
     // continue
     connect(ui->btn_continue, &QPushButton::clicked,
             this, [=]() {
-                if (this->_curFrameIdx > 0 && this->_isRunning == false)
-                {
+                if (this->_curFrameIdx > 0 && this->_isRunning == false) {
+                    this->_rebuilder->changeToRenderMode();
                     this->_isRunning = true;
+                    ui->btn_stop->setEnabled(true);
+                    ui->btn_continue->setEnabled(false);
                     this->_timer.singleShot(0, this, &MainWindow::processNewFrame);
                 }
             });
     // force quit
     connect(ui->btn_forcequit, &QPushButton::clicked,
             this, [=]() {
-                if (this->_curFrameIdx < 0)
-                {
+                if (this->_curFrameIdx < 0) {
                     return;
                 }
                 this->_curFrameIdx = -1;
@@ -280,56 +268,21 @@ void MainWindow::connection()
     connect(this->_recognizer, &Recognizer::signalProcessNewFrameFinished,
             this, [=](cv::Mat img) {
                 cv::imshow(this->_recognizer->_cvWinName.c_str(), img);
-                if (this->_isRunning)
-                {
+                if (this->_isRunning) {
                     emit this->signalNewColorFrameToRecongnizer(_imRGB);
                 }
             });
     // rebuild finished
     connect(this->_rebuilder, &Rebuilder::signalProcessNewFrameFinished,
-            this, [=](cv::Mat img, pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, Sophus::SE3f Tcw) {
+            this, [=](cv::Mat img) {
                 cv::imshow(this->_rebuilder->_cvWinName.c_str(), img);
-
-                if (Tcw.log() == Sophus::SE3f().log())
-                {
-                    viewer->removeAllPointClouds();
-                    cloudIdx = 0;
-                    viewer->setCameraPosition(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
-                    viewer->spinOnce();
-                    return;
-                }
-                auto Twc = Tcw.inverse();
-                auto quat = Twc.unit_quaternion();
-                auto trans = Twc.translation();
-
-                // point cloud
-                viewer->addPointCloud(frameCloud, std::to_string(cloudIdx++));
-                Eigen::Vector3f pos(0.0f, 0.0f, -3.0f);
-                Eigen::Vector3f view(0.0f, 0.0f, 0.0f);
-                Eigen::Vector3f up(0.0f, -1.0f, -3.0f);
-                pos = Twc * pos;
-                view = Twc * view;
-                up = Twc * up;
-                up(0) = up(0) - pos(0), up(1) = up(1) - pos(1), up(2) = up(2) - pos(2);
-                viewer->setCameraPosition(pos(0), pos(1), pos(2),
-                                          view(0), view(1), view(2),
-                                          up(0), up(1), up(2));
-
-                // Camera coord
-                Eigen::Isometry3f coord(quat);
-                coord.pretranslate(trans);
-                viewer->removeCoordinateSystem("Camera");
-                viewer->addCoordinateSystem(0.2, Eigen::Affine3f(coord.affine()), "Camera");
-
-                viewer->spinOnce();
             });
     // new depth frame
     connect(this, &MainWindow::signalNewDepthFrameToReBulider,
             this->_rebuilder, &Rebuilder::processNewDepthFrame);
 }
 
-void MainWindow::init()
-{
+void MainWindow::init() {
     qDebug() << "main thread: " << QThread::currentThread();
 
     this->statusBar()->setFont(QFont("Ubuntu Mono", -1, -1, true));
@@ -344,15 +297,13 @@ void MainWindow::init()
     this->_rebuilder->moveToThread(&this->_rebulidThread);
 }
 
-void MainWindow::closeEvent(QCloseEvent *e)
-{
+void MainWindow::closeEvent(QCloseEvent *e) {
     // quit running thread
     this->quitThreads();
     return QMainWindow::closeEvent(e);
 }
 
-void MainWindow::loadImages(const string &strAssociationFilename)
-{
+void MainWindow::loadImages(const string &strAssociationFilename) {
     // load [imageName, association] from folder
     this->_vstrImageFilenamesD.clear();
     this->_vstrImageFilenamesRGB.clear();
@@ -360,12 +311,10 @@ void MainWindow::loadImages(const string &strAssociationFilename)
 
     ifstream fAssociation;
     fAssociation.open(strAssociationFilename.c_str());
-    while (!fAssociation.eof())
-    {
+    while (!fAssociation.eof()) {
         string s;
         getline(fAssociation, s);
-        if (!s.empty())
-        {
+        if (!s.empty()) {
             stringstream ss;
             ss << s;
             double t;
@@ -381,21 +330,19 @@ void MainWindow::loadImages(const string &strAssociationFilename)
     }
 }
 
-void MainWindow::processNewFrame()
-{
-    if (!this->_isRunning)
-    {
+void MainWindow::processNewFrame() {
+    if (!this->_isRunning) {
         return;
     }
 
     ++this->_curFrameIdx;
 
     // if all images have been processed, then return
-    if (this->_curFrameIdx == this->_vstrImageFilenamesRGB.size())
-    {
+    if (this->_curFrameIdx == this->_vstrImageFilenamesRGB.size()) {
         this->statusBar()->showMessage("process for all frames finished.");
         qDebug() << "slam finished!";
         this->_slam->shutdown();
+        this->_rebuilder->changeToInterMode();
         ui->btn_forcequit->click();
         this->displayMapInfo();
         return;
@@ -413,8 +360,7 @@ void MainWindow::processNewFrame()
     _tframe = this->_vTimestamps[this->_curFrameIdx];
 
     // check color image
-    if (this->_imRGB.empty())
-    {
+    if (this->_imRGB.empty()) {
         QMessageBox::information(
             this,
             "Info",
@@ -429,8 +375,7 @@ void MainWindow::processNewFrame()
     }
 
     // resize the image
-    if (this->_imgScale != 1.f)
-    {
+    if (this->_imgScale != 1.f) {
         int width = _imRGB.cols * _imgScale;
         int height = _imRGB.rows * _imgScale;
         cv::resize(_imRGB, _imRGB, cv::Size(width, height));
@@ -445,51 +390,42 @@ void MainWindow::processNewFrame()
     // slam
     emit this->signalNewFrameToSlamSystem(_imRGB, _imD, _tframe);
 
-    if (this->_curFrameIdx == 0)
-    {
+    if (this->_curFrameIdx == 0) {
         emit this->signalNewColorFrameToRecongnizer(_imRGB);
     }
 }
 
-void MainWindow::quitThreads()
-{
+void MainWindow::quitThreads() {
     // quit the running thread
-    if (this->_slamThread.isRunning())
-    {
+    if (this->_slamThread.isRunning()) {
         this->_slamThread.quit();
         this->_slamThread.wait();
     }
 
-    if (this->_recogThread.isRunning())
-    {
+    if (this->_recogThread.isRunning()) {
         this->_recogThread.quit();
         this->_recogThread.wait();
     }
 
-    if (this->_rebulidThread.isRunning())
-    {
-        this->_rebulidThread.quit();
-        this->_rebulidThread.wait();
-    }
+    //    if (this->_rebulidThread.isRunning()) {
+    //        this->_rebulidThread.quit();
+    //        this->_rebulidThread.wait();
+    //    }
 }
 
-void MainWindow::displayMapInfo()
-{
+void MainWindow::displayMapInfo() {
     this->displayMapPoints();
     this->displayKeyFrames();
     ui->tabWidget->setCurrentIndex(1);
 }
 
-void MainWindow::displayMapPoints()
-{
+void MainWindow::displayMapPoints() {
     auto slamSystem = this->_slam->getSlamSystem();
     const auto atlas = slamSystem->mpAtlas;
     std::vector<ORB_SLAM3::MapPoint *> mapPoints = atlas->GetAllMapPoints();
     int num = 0;
-    for (auto mpPtr : mapPoints)
-    {
-        if (mpPtr != nullptr)
-        {
+    for (auto mpPtr : mapPoints) {
+        if (mpPtr != nullptr) {
             ++num;
         }
     }
@@ -498,10 +434,8 @@ void MainWindow::displayMapPoints()
     ui->tabW_mappoint->setRowCount(num);
     QTableWidgetItem *item;
     int idx = 0;
-    for (auto mpPtr : mapPoints)
-    {
-        if (mpPtr != nullptr)
-        {
+    for (auto mpPtr : mapPoints) {
+        if (mpPtr != nullptr) {
             item = new QTableWidgetItem(QString::number(mpPtr->mnId));
             item->setTextAlignment(Qt::AlignCenter);
             ui->tabW_mappoint->setItem(idx, 0, item);
@@ -525,16 +459,13 @@ void MainWindow::displayMapPoints()
     }
 }
 
-void MainWindow::displayKeyFrames()
-{
+void MainWindow::displayKeyFrames() {
     auto slamSystem = this->_slam->getSlamSystem();
     const auto &atlas = slamSystem->mpAtlas;
     std::vector<ORB_SLAM3::KeyFrame *> keyFrames = atlas->GetAllKeyFrames();
     int num = 0;
-    for (auto framePtr : keyFrames)
-    {
-        if (framePtr != nullptr)
-        {
+    for (auto framePtr : keyFrames) {
+        if (framePtr != nullptr) {
             ++num;
         }
     }
@@ -544,10 +475,8 @@ void MainWindow::displayKeyFrames()
     ui->tabW_keyframes->setHorizontalHeaderLabels({"id", "Qx", "Qy", "Qz", "Qw", "X(M)", "Y(M)", "Z(M)"});
     ui->tabW_keyframes->setRowCount(num);
     QTableWidgetItem *item;
-    for (auto framePtr : keyFrames)
-    {
-        if (framePtr != nullptr)
-        {
+    for (auto framePtr : keyFrames) {
+        if (framePtr != nullptr) {
             auto rot = Eigen::Quaternionf(framePtr->GetRotation()).normalized();
             auto trans = framePtr->GetTranslation();
 
@@ -588,8 +517,7 @@ void MainWindow::displayKeyFrames()
     }
 }
 
-void MainWindow::create_CV_PCL_Wins()
-{
+void MainWindow::createCVWins() {
     // create the first window
     auto cvWin = cvEmbedWindow(this->_rebuilder->_cvWinName);
     ui->layout_rebuilder->addWidget(cvWin);
@@ -603,14 +531,4 @@ void MainWindow::create_CV_PCL_Wins()
         auto img = cv::imread("../img/recognizer.png", cv::IMREAD_UNCHANGED);
         cv::imshow(this->_recognizer->_cvWinName.c_str(), img);
     });
-
-    this->allCloudPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-    cloudIdx = 0;
-    this->viewer = std::make_shared<pcl::visualization::PCLVisualizer>("PointCloud");
-    this->viewer->setSize(1000, 640);
-    this->viewer->setBackgroundColor(0.9f, 0.9f, 0.9f);
-
-    Eigen::Isometry3f origin(Eigen::Quaternionf::Identity());
-    origin.pretranslate(Eigen::Vector3f::Zero());
-    this->viewer->addCoordinateSystem(0.5, Eigen::Affine3f(origin.affine()), "origin");
 }

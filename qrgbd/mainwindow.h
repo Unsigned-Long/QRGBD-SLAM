@@ -13,17 +13,15 @@
 #include <memory>
 
 QT_BEGIN_NAMESPACE
-namespace Ui
-{
+namespace Ui {
     class MainWindow;
 }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
+  public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
@@ -45,9 +43,9 @@ public:
 
     void displayKeyFrames();
 
-    void create_CV_PCL_Wins();
+    void createCVWins();
 
-signals:
+  signals:
     void signalCreateSlamSystem(ConfigDialog *config);
 
     void signalNewFrameToSlamSystem(cv::Mat colorImg, cv::Mat depthImg, double tframe);
@@ -60,7 +58,7 @@ signals:
 
     void signalInitRecoginzer(ConfigDialog *cof);
 
-private:
+  private:
     Ui::MainWindow *ui;
     // the help dialog
     HelpDialog _helpDig;
@@ -110,11 +108,5 @@ private:
 
     // the slam thread is running
     bool _isRunning = false;
-
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr allCloudPts;
-
-    pcl::visualization::PCLVisualizer::Ptr viewer;
-
-    std::size_t cloudIdx;
 };
 #endif // MAINWINDOW_H
