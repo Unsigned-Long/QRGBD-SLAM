@@ -535,3 +535,39 @@ void MainWindow::createCVWins() {
         cv::imshow(this->_recognizer->_cvWinName.c_str(), img);
     });
 }
+
+void MainWindow::on_actionrun_triggered() {
+    ui->btn_run->click();
+}
+
+void MainWindow::on_actionstop_triggered() {
+    ui->btn_stop->click();
+}
+
+void MainWindow::on_actioncontinue_triggered() {
+    ui->btn_continue->click();
+}
+
+void MainWindow::on_actionforce_quit_triggered() {
+    ui->btn_forcequit->click();
+}
+
+void MainWindow::on_actionhelp_triggered() {
+    ui->btn_help->click();
+}
+
+void MainWindow::on_actionback_triggered() {
+    ui->btn_back->click();
+}
+
+void MainWindow::on_actionsave_triggered() {
+    ui->btn_save->click();
+}
+
+void MainWindow::on_actionquit_triggered() {
+    ui->btn_quit->click();
+}
+
+void MainWindow::on_actionstart_triggered() {
+    ui->btn_start->click();
+}

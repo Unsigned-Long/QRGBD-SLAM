@@ -58,6 +58,25 @@ class MainWindow : public QMainWindow {
 
     void signalInitRecoginzer(ConfigDialog *cof);
 
+  private slots:
+    void on_actionrun_triggered();
+
+    void on_actionstop_triggered();
+
+    void on_actioncontinue_triggered();
+
+    void on_actionforce_quit_triggered();
+
+    void on_actionhelp_triggered();
+
+    void on_actionback_triggered();
+
+    void on_actionsave_triggered();
+
+    void on_actionquit_triggered();
+
+    void on_actionstart_triggered();
+
   private:
     Ui::MainWindow *ui;
     // the help dialog
