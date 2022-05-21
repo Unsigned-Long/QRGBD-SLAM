@@ -260,6 +260,12 @@ void MainWindow::connection() {
                 this->quitThreads();
 
                 this->statusBar()->showMessage("quit all threads");
+
+                this->displayMapInfo();
+
+                this->_slam->shutdown();
+
+                this->_rebuilder->changeToInterMode();
             });
     // new color frame
     connect(this, &MainWindow::signalNewColorFrameToRecongnizer,
@@ -341,10 +347,7 @@ void MainWindow::processNewFrame() {
     if (this->_curFrameIdx == this->_vstrImageFilenamesRGB.size()) {
         this->statusBar()->showMessage("process for all frames finished.");
         qDebug() << "slam finished!";
-        this->_slam->shutdown();
-        this->_rebuilder->changeToInterMode();
         ui->btn_forcequit->click();
-        this->displayMapInfo();
         return;
     }
 

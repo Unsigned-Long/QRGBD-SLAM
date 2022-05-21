@@ -543,7 +543,7 @@
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
-            <string>Tab 1</string>
+            <string>2D Visual</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_6">
             <item row="0" column="1">
@@ -556,14 +556,11 @@
               </item>
              </layout>
             </item>
-            <item row="0" column="2">
-             <layout class="QGridLayout" name="layout_rgbd3d"/>
-            </item>
            </layout>
           </widget>
           <widget class="QWidget" name="tab_2">
            <attribute name="title">
-            <string>Tab 2</string>
+            <string>Map Info</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_8">
             <item row="0" column="0">

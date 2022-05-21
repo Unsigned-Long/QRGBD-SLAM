@@ -5,5 +5,7 @@
         <file>../img/ros-server.png</file>
         <file>../img/qrgbd.png</file>
         <file>../img/ic.ico</file>
+        <file>../img/qrgbd-system.png</file>
+        <file>../img/qrgbd-system-small.png</file>
     </qresource>
 </RCC>
