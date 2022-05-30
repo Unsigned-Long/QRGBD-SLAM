@@ -26,15 +26,14 @@ typedef pcl::PointXYZRGBNormal SurfelT;
 typedef pcl::PointCloud<SurfelT> SurfelCloud;
 typedef pcl::PointCloud<SurfelT>::Ptr SurfelCloudPtr;
 
-class Optimize
-{
-protected:
+class Optimize {
+  public:
     static SurfelCloudPtr reconstructionSurface(const PointCloudPtr &input,
                                                 float radius = 0.05,
                                                 int polynomial_order = 2);
     static pcl::PolygonMeshPtr triangulateMesh(const SurfelCloudPtr &surfels);
     static pcl::TextureMeshPtr MashTextured(const pcl::PolygonMeshPtr &mesh);
 
-public:
+  public:
     static bool ICPTrack(const PointCloudPtr &source, const PointCloudPtr &target, Sophus::SE3f &Tts);
 };

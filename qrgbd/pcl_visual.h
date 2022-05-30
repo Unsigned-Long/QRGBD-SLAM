@@ -28,11 +28,11 @@ class PCLVisual : public QObject {
   private:
     // pcl visualize
 
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr allCloudPts;
-
     pcl::visualization::PCLVisualizer::Ptr viewer;
 
-    std::size_t cloudIdx;
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr _allPts;
+
+    std::size_t _count;
 
   public:
     PCL_VISUAL_MODE _mode = PCL_VISUAL_MODE::RENDER_MODE;

@@ -1,5 +1,7 @@
 #include "pcl_visual.h"
 #include "QThread"
+#include "optimize.h"
+#include "timer.h"
 #include <QDebug>
 
 PCLVisual::PCLVisual(QObject *parent)
@@ -7,11 +9,11 @@ PCLVisual::PCLVisual(QObject *parent)
 
     // pcl win
 
-    this->allCloudPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-    cloudIdx = 0;
+    this->_allPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
     this->viewer = std::make_shared<pcl::visualization::PCLVisualizer>("PointCloud");
     this->viewer->setSize(1000, 640);
     this->viewer->setBackgroundColor(0.9f, 0.9f, 0.9f);
+    this->_count = 0;
 
     Eigen::Isometry3f origin(Eigen::Quaternionf::Identity());
     origin.pretranslate(Eigen::Vector3f::Zero());
@@ -25,19 +27,45 @@ void PCLVisual::showPointCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud
     if (this->_mode == PCL_VISUAL_MODE::RENDER_MODE) {
         this->renderMode(frameCloud, Tcw);
     } else if (this->_mode == PCL_VISUAL_MODE::INTERACTIVE_MODE) {
+        {
+            pcl::VoxelGrid<pcl::PointXYZRGB> filter;
+            filter.setLeafSize(0.02, 0.02, 0.02);
+            filter.setInputCloud(_allPts);
+            filter.filter(*_allPts);
+            viewer->removeAllPointClouds();
+            viewer->addPointCloud(this->_allPts, "cloud");
+        }
+        {
+            ns_timer::Timer timer;
+            timer.reStart();
+            SurfelCloudPtr _allPtsSur = Optimize::reconstructionSurface(_allPts, 0.05);
+            qDebug() << QString::fromStdString(timer.last_elapsed<ns_timer::DurationType::MS>("reconstructionSurface"));
+            timer.reStart();
+            pcl::PolygonMeshPtr _allPtsPoMesh = Optimize::triangulateMesh(_allPtsSur);
+            qDebug() << QString::fromStdString(timer.last_elapsed("triangulateMesh"));
+            this->viewer->addPolylineFromPolygonMesh(*_allPtsPoMesh, "PolylineFromPolygonMesh");
+            this->viewer->addPolygonMesh(*_allPtsPoMesh, "PolygonMesh");
+        }
+        //
         while (!this->viewer->wasStopped() && this->_mode == PCL_VISUAL_MODE::INTERACTIVE_MODE) {
             this->viewer->spinOnce();
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+        {
+            this->viewer->removePolygonMesh("PolygonMesh");
         }
         emit this->signalShowPtsFinished();
     }
 }
 
 void PCLVisual::renderMode(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, Sophus::SE3f Tcw) {
-    qDebug() << "PCL Visual thread: " << QThread::currentThread();
+    ++this->_count;
     if (Tcw.log() == Sophus::SE3f().log()) {
+        // remove pts
         viewer->removeAllPointClouds();
-        cloudIdx = 0;
+        this->_allPts->clear();
+        this->_allPts->reserve(0);
+        // camera
         viewer->setCameraPosition(1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f);
         viewer->spinOnce();
         emit this->signalShowPtsFinished();
@@ -47,10 +75,22 @@ void PCLVisual::renderMode(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, So
     auto quat = Twc.unit_quaternion();
     auto trans = Twc.translation();
 
-    // point cloud
-    viewer->addPointCloud(frameCloud, std::to_string(cloudIdx++));
+    // add new point cloud
+    this->_allPts->resize(this->_allPts->size() + frameCloud->size());
+    std::copy(frameCloud->cbegin(), frameCloud->cend(), this->_allPts->end() - frameCloud->size());
+    // filter
+    if (this->_count % 20 == 0) {
+        pcl::VoxelGrid<pcl::PointXYZRGB> filter;
+        filter.setLeafSize(0.02, 0.02, 0.02);
+        filter.setInputCloud(_allPts);
+        filter.filter(*_allPts);
+        viewer->removeAllPointClouds();
+        viewer->addPointCloud(this->_allPts, "cloud");
+    } else {
+        viewer->addPointCloud(frameCloud, "cloud_" + std::to_string(this->_count));
+    }
 
-    // camera
+    // set camera pos
     Eigen::Vector3f pos(0.0f, 0.0f, -3.0f);
     Eigen::Vector3f view(0.0f, 0.0f, 0.0f);
     Eigen::Vector3f up(0.0f, -1.0f, -3.0f);

@@ -5,8 +5,7 @@
 #include "ui_configdialog.h"
 
 ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent),
-                                              ui(new Ui::ConfigDialog)
-{
+                                              ui(new Ui::ConfigDialog) {
     ui->setupUi(this);
     this->setWindowTitle("Configure");
     this->connection();
@@ -16,6 +15,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent),
         this->_temp_colorImgPath = this->_colorImgPath = "/home/csl/dataset/2022-5-4-14-10-38/color";
         this->_temp_depthImgPath = this->_depthImgPath = "/home/csl/dataset/2022-5-4-14-10-38/depth";
         this->_temp_assoPath = this->_assoPath = "/home/csl/dataset/2022-5-4-14-10-38/info/associate.txt";
+        // -----------
         this->_temp_settingPath = this->_settingPath = "/home/csl/TempWork/rgbd-slam/config/rgbd.yaml";
         this->_temp_vocPath = this->_vocPath = "/home/csl/SoftWare/ORB_SLAM3/Vocabulary/ORBvoc.txt";
         this->_temp_classes = this->_classes = "/home/csl/TempWork/rgbd-slam/yolov4-learn/yolo/coco.names";
@@ -26,27 +26,21 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent),
     }
 }
 
-ConfigDialog::~ConfigDialog()
-{
+ConfigDialog::~ConfigDialog() {
     delete ui;
 }
 
-void ConfigDialog::connection()
-{
+void ConfigDialog::connection() {
     // sequence
     connect(ui->load_seq, &QPushButton::clicked, this, [=]() {
         QString seqPath;
-        if (this->_temp_seqPath.isEmpty())
-        {
+        if (this->_temp_seqPath.isEmpty()) {
             seqPath = QFileDialog::getExistingDirectory(this, "Sequence Path", QDir::currentPath());
-        }
-        else
-        {
+        } else {
             seqPath = QFileDialog::getExistingDirectory(this, "Sequence Path", this->_temp_seqPath);
         }
 
-        if (seqPath.isEmpty())
-        {
+        if (seqPath.isEmpty()) {
             return;
         }
         this->_temp_seqPath = seqPath;
@@ -60,17 +54,13 @@ void ConfigDialog::connection()
     // vocabulary
     connect(ui->load_voc, &QPushButton::clicked, this, [=]() {
         QString vocPath;
-        if (this->_temp_vocPath.isEmpty())
-        {
+        if (this->_temp_vocPath.isEmpty()) {
             vocPath = QFileDialog::getOpenFileName(this, "Vocabulary Path", QDir::currentPath());
-        }
-        else
-        {
+        } else {
             vocPath = QFileDialog::getOpenFileName(this, "Vocabulary Path", this->_temp_vocPath);
         }
 
-        if (vocPath.isEmpty())
-        {
+        if (vocPath.isEmpty()) {
             return;
         }
 
@@ -81,17 +71,13 @@ void ConfigDialog::connection()
     // settings
     connect(ui->load_set, &QPushButton::clicked, this, [=]() {
         QString setPath;
-        if (this->_temp_settingPath.isEmpty())
-        {
+        if (this->_temp_settingPath.isEmpty()) {
             setPath = QFileDialog::getOpenFileName(this, "Settings Path", QDir::currentPath());
-        }
-        else
-        {
+        } else {
             setPath = QFileDialog::getOpenFileName(this, "Settings Path", this->_temp_settingPath);
         }
 
-        if (setPath.isEmpty())
-        {
+        if (setPath.isEmpty()) {
             return;
         }
 
@@ -103,17 +89,13 @@ void ConfigDialog::connection()
     // classes
     connect(ui->load_classes, &QPushButton::clicked, this, [=]() {
         QString classPath;
-        if (this->_temp_classes.isEmpty())
-        {
+        if (this->_temp_classes.isEmpty()) {
             classPath = QFileDialog::getOpenFileName(this, "Classes Path", QDir::currentPath());
-        }
-        else
-        {
+        } else {
             classPath = QFileDialog::getOpenFileName(this, "Classes Path", this->_temp_classes);
         }
 
-        if (classPath.isEmpty())
-        {
+        if (classPath.isEmpty()) {
             return;
         }
 
@@ -124,17 +106,13 @@ void ConfigDialog::connection()
     // modelConfig
     connect(ui->load_modelConfig, &QPushButton::clicked, this, [=]() {
         QString modelConfigPath;
-        if (this->_temp_modelConfig.isEmpty())
-        {
+        if (this->_temp_modelConfig.isEmpty()) {
             modelConfigPath = QFileDialog::getOpenFileName(this, "Model Config Path", QDir::currentPath());
-        }
-        else
-        {
+        } else {
             modelConfigPath = QFileDialog::getOpenFileName(this, "Model Config Path", this->_temp_modelConfig);
         }
 
-        if (modelConfigPath.isEmpty())
-        {
+        if (modelConfigPath.isEmpty()) {
             return;
         }
 
@@ -145,17 +123,13 @@ void ConfigDialog::connection()
     // modelweight
     connect(ui->load_modelWeight, &QPushButton::clicked, this, [=]() {
         QString modelWeightPath;
-        if (this->_temp_classes.isEmpty())
-        {
+        if (this->_temp_classes.isEmpty()) {
             modelWeightPath = QFileDialog::getOpenFileName(this, "Model Weights Path", QDir::currentPath());
-        }
-        else
-        {
+        } else {
             modelWeightPath = QFileDialog::getOpenFileName(this, "Model Weights Path", this->_temp_modelWeights);
         }
 
-        if (modelWeightPath.isEmpty())
-        {
+        if (modelWeightPath.isEmpty()) {
             return;
         }
 
@@ -193,8 +167,7 @@ void ConfigDialog::connection()
     });
 }
 
-void ConfigDialog::display()
-{
+void ConfigDialog::display() {
     // display the path accroding to the temp variables
     ui->lineEdit_seq->setText(this->_temp_seqPath);
     ui->lineEdit_color->setText(this->_temp_colorImgPath);
@@ -209,8 +182,7 @@ void ConfigDialog::display()
     ui->lineEdit_modelWeight->setText(this->_temp_modelWeights);
 }
 
-bool ConfigDialog::isSetted()
-{
+bool ConfigDialog::isSetted() {
     return !this->_seqPath.isEmpty() &
            !this->_assoPath.isEmpty() &
            !this->_colorImgPath.isEmpty() &
@@ -222,8 +194,7 @@ bool ConfigDialog::isSetted()
            !this->_modelWeights.isEmpty();
 }
 
-void ConfigDialog::closeEvent(QCloseEvent *e)
-{
+void ConfigDialog::closeEvent(QCloseEvent *e) {
     // if the configure is changed, then emit a warning
     bool changed = (ui->lineEdit_seq->text() != this->_seqPath) ||
                    (ui->lineEdit_asso->text() != this->_assoPath) ||
@@ -234,16 +205,14 @@ void ConfigDialog::closeEvent(QCloseEvent *e)
                    (ui->lineEdit_class->text() != this->_classes) ||
                    (ui->lineEdit_modelConfig->text() != this->_modelConfig) ||
                    (ui->lineEdit_modelWeight->text() != this->_temp_modelWeights);
-    if (changed)
-    {
+    if (changed) {
         auto choice = QMessageBox::information(
             this,
             "Attention",
             "Your configure has been changed, do you want to save it?",
             QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::No);
 
-        if (choice == QMessageBox::StandardButton::Yes)
-        {
+        if (choice == QMessageBox::StandardButton::Yes) {
             ui->btn_ok->click();
         }
     }

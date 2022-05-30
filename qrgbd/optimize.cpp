@@ -3,8 +3,7 @@
 SurfelCloudPtr Optimize::reconstructionSurface(
     const PointCloudPtr &input,
     float radius,
-    int polynomial_order)
-{
+    int polynomial_order) {
     pcl::MovingLeastSquares<PointT, SurfelT> mls;
     pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT>);
     mls.setSearchMethod(tree);
@@ -19,8 +18,7 @@ SurfelCloudPtr Optimize::reconstructionSurface(
     return (output);
 }
 
-pcl::PolygonMeshPtr Optimize::triangulateMesh(const SurfelCloudPtr &surfels)
-{
+pcl::PolygonMeshPtr Optimize::triangulateMesh(const SurfelCloudPtr &surfels) {
 
     pcl::search::KdTree<SurfelT>::Ptr tree(new pcl::search::KdTree<SurfelT>);
     tree->setInputCloud(surfels);
@@ -28,7 +26,7 @@ pcl::PolygonMeshPtr Optimize::triangulateMesh(const SurfelCloudPtr &surfels)
     pcl::GreedyProjectionTriangulation<SurfelT> gp3;
     pcl::PolygonMeshPtr triangles(new pcl::PolygonMesh);
 
-    gp3.setSearchRadius(0.05);
+    gp3.setSearchRadius(0.1);
 
     gp3.setMu(2.5);
     gp3.setMaximumNearestNeighbors(100);
@@ -44,12 +42,10 @@ pcl::PolygonMeshPtr Optimize::triangulateMesh(const SurfelCloudPtr &surfels)
     return triangles;
 }
 
-pcl::TextureMeshPtr Optimize::MashTextured(const pcl::PolygonMeshPtr &mesh)
-{
+pcl::TextureMeshPtr Optimize::MashTextured(const pcl::PolygonMeshPtr &mesh) {
 }
 
-bool Optimize::ICPTrack(const PointCloudPtr &source, const PointCloudPtr &target, Sophus::SE3f &Tts)
-{
+bool Optimize::ICPTrack(const PointCloudPtr &source, const PointCloudPtr &target, Sophus::SE3f &Tts) {
 
     pcl::VoxelGrid<pcl::PointXYZRGB> filter;
     filter.setLeafSize(0.02, 0.02, 0.02);
@@ -64,8 +60,7 @@ bool Optimize::ICPTrack(const PointCloudPtr &source, const PointCloudPtr &target
     icp.setMaximumIterations(30);
     icp.align(*source);
 
-    if (icp.hasConverged())
-    {
+    if (icp.hasConverged()) {
         Eigen::Matrix4f trans = icp.getFinalTransformation();
         auto rot = trans.block(0, 0, 3, 3);
         //
