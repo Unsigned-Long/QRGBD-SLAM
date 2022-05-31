@@ -77,7 +77,7 @@ class MainWindow : public QMainWindow {
 
     void on_actionstart_triggered();
 
-  private:
+  public:
     Ui::MainWindow *ui;
     // the help dialog
     HelpDialog _helpDig;

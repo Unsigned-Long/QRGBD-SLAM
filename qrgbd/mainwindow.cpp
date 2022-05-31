@@ -5,6 +5,7 @@
 #include "QMessageBox"
 #include "csv.h"
 #include "embed.h"
+#include "pcl-1.12/pcl/io/pcd_io.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -87,6 +88,13 @@ void MainWindow::connection() {
                                                  trans(0), trans(1), trans(2));
                     }
                 }
+
+                auto cloud = this->_rebuilder->_pcl_visual->_allPts;
+
+                // save pcd file
+                pcl::io::savePCDFile(path.toStdString() + "/scene.pcd", *cloud, true);
+
+                // finished
                 QMessageBox::information(this, "Attention", "Save finished!");
             });
     // for quit button
@@ -289,6 +297,13 @@ void MainWindow::connection() {
 }
 
 void MainWindow::init() {
+    // set "QRGBD" images
+    ui->label_Q_2->setPixmap(QPixmap("../img/q.png").scaledToWidth(ui->label_Q_2->width()));
+    ui->label_R_2->setPixmap(QPixmap("../img/r.png").scaledToWidth(ui->label_R_2->width()));
+    ui->label_G_2->setPixmap(QPixmap("../img/g.png").scaledToWidth(ui->label_G_2->width()));
+    ui->label_B_2->setPixmap(QPixmap("../img/b.png").scaledToWidth(ui->label_B_2->width()));
+    ui->label_D_2->setPixmap(QPixmap("../img/d.png").scaledToWidth(ui->label_D_2->width()));
+
     qDebug() << "main thread: " << QThread::currentThread();
 
     this->statusBar()->setFont(QFont("Ubuntu Mono", -1, -1, true));

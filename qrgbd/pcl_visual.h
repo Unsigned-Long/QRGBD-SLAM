@@ -19,13 +19,15 @@ class PCLVisual : public QObject {
 
     void showPointCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, Sophus::SE3f Tcw);
 
+    double curTime();
+
   public slots:
     void renderMode(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, Sophus::SE3f Tcw);
 
   signals:
     void signalShowPtsFinished();
 
-  private:
+  public:
     // pcl visualize
 
     pcl::visualization::PCLVisualizer::Ptr viewer;

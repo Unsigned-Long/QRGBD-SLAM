@@ -27,6 +27,8 @@ class Rebuilder : public QObject {
 
     void changeToInterMode();
 
+    double curTime();
+
     void changeToRenderMode();
 
   public slots:
@@ -40,7 +42,7 @@ class Rebuilder : public QObject {
 
     void signalPCLShowPointCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, Sophus::SE3f Tcw);
 
-  private:
+  public:
     Ui::Rebuilder *ui;
 
     float fx, fy, cx, cy, depthScale;

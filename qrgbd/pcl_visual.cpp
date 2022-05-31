@@ -10,7 +10,10 @@ PCLVisual::PCLVisual(QObject *parent)
     // pcl win
 
     this->_allPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
-    this->viewer = std::make_shared<pcl::visualization::PCLVisualizer>("PointCloud");
+    this->viewer = std::make_shared<pcl::visualization::PCLVisualizer>();
+    //
+    viewer->removeAllPointClouds();
+    //
     this->viewer->setSize(1000, 640);
     this->viewer->setBackgroundColor(0.9f, 0.9f, 0.9f);
     this->_count = 0;
@@ -36,15 +39,15 @@ void PCLVisual::showPointCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud
             viewer->addPointCloud(this->_allPts, "cloud");
         }
         {
-            ns_timer::Timer timer;
-            timer.reStart();
-            SurfelCloudPtr _allPtsSur = Optimize::reconstructionSurface(_allPts, 0.05);
-            qDebug() << QString::fromStdString(timer.last_elapsed<ns_timer::DurationType::MS>("reconstructionSurface"));
-            timer.reStart();
-            pcl::PolygonMeshPtr _allPtsPoMesh = Optimize::triangulateMesh(_allPtsSur);
-            qDebug() << QString::fromStdString(timer.last_elapsed("triangulateMesh"));
-            this->viewer->addPolylineFromPolygonMesh(*_allPtsPoMesh, "PolylineFromPolygonMesh");
-            this->viewer->addPolygonMesh(*_allPtsPoMesh, "PolygonMesh");
+            //            ns_timer::Timer timer;
+            //            timer.reStart();
+            //            SurfelCloudPtr _allPtsSur = Optimize::reconstructionSurface(_allPts, 0.05);
+            //            qDebug() << QString::fromStdString(timer.last_elapsed<ns_timer::DurationType::MS>("reconstructionSurface"));
+            //            timer.reStart();
+            //            pcl::PolygonMeshPtr _allPtsPoMesh = Optimize::triangulateMesh(_allPtsSur);
+            //            qDebug() << QString::fromStdString(timer.last_elapsed("triangulateMesh"));
+            //            this->viewer->addPolylineFromPolygonMesh(*_allPtsPoMesh, "PolylineFromPolygonMesh");
+            //            this->viewer->addPolygonMesh(*_allPtsPoMesh, "PolygonMesh");
         }
         //
         while (!this->viewer->wasStopped() && this->_mode == PCL_VISUAL_MODE::INTERACTIVE_MODE) {
@@ -52,17 +55,23 @@ void PCLVisual::showPointCloud(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
         {
-            this->viewer->removePolygonMesh("PolygonMesh");
+            //            this->viewer->removePolygonMesh("PolygonMesh");
         }
         emit this->signalShowPtsFinished();
     }
+}
+
+double PCLVisual::curTime() {
+    auto now = std::chrono::system_clock::now();
+    return std::chrono::time_point_cast<std::chrono::duration<double>>(now)
+        .time_since_epoch()
+        .count();
 }
 
 void PCLVisual::renderMode(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, Sophus::SE3f Tcw) {
     ++this->_count;
     if (Tcw.log() == Sophus::SE3f().log()) {
         // remove pts
-        viewer->removeAllPointClouds();
         this->_allPts->clear();
         this->_allPts->reserve(0);
         // camera
@@ -74,11 +83,10 @@ void PCLVisual::renderMode(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, So
     auto Twc = Tcw.inverse();
     auto quat = Twc.unit_quaternion();
     auto trans = Twc.translation();
-
     // add new point cloud
     this->_allPts->resize(this->_allPts->size() + frameCloud->size());
     std::copy(frameCloud->cbegin(), frameCloud->cend(), this->_allPts->end() - frameCloud->size());
-    // filter
+
     if (this->_count % 20 == 0) {
         pcl::VoxelGrid<pcl::PointXYZRGB> filter;
         filter.setLeafSize(0.02, 0.02, 0.02);
@@ -89,7 +97,6 @@ void PCLVisual::renderMode(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, So
     } else {
         viewer->addPointCloud(frameCloud, "cloud_" + std::to_string(this->_count));
     }
-
     // set camera pos
     Eigen::Vector3f pos(0.0f, 0.0f, -3.0f);
     Eigen::Vector3f view(0.0f, 0.0f, 0.0f);
@@ -106,8 +113,6 @@ void PCLVisual::renderMode(pcl::PointCloud<pcl::PointXYZRGB>::Ptr frameCloud, So
     coord.pretranslate(trans);
     viewer->removeCoordinateSystem("Camera");
     viewer->addCoordinateSystem(0.2, Eigen::Affine3f(coord.affine()), "Camera");
-
     viewer->spinOnce();
-
     emit this->signalShowPtsFinished();
 }

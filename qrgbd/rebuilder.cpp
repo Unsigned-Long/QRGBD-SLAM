@@ -18,6 +18,13 @@ void Rebuilder::changeToInterMode() {
     emit this->signalPCLShowPointCloud(nullptr, Sophus::SE3f());
 }
 
+double Rebuilder::curTime() {
+    auto now = std::chrono::system_clock::now();
+    return std::chrono::time_point_cast<std::chrono::duration<double>>(now)
+        .time_since_epoch()
+        .count();
+}
+
 void Rebuilder::changeToRenderMode() {
     this->_pcl_visual->_mode = PCL_VISUAL_MODE::RENDER_MODE;
     auto tempPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
@@ -60,7 +67,7 @@ void Rebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus:
 
             // --- for color projection ---
             d /= 1000.0;
-            auto rgb = ns_clp::ColorPrj::project(d, 1.0, 4.0, true, 0, ns_clp::Color::red_yellow);
+            auto rgb = ns_clp::ColorPrj::project(d, 0.0, 2.5, true, 0, ns_clp::Color::red_yellow);
             colorPtr[3 * u + 0] = std::get<2>(rgb);
             colorPtr[3 * u + 1] = std::get<1>(rgb);
             colorPtr[3 * u + 2] = std::get<0>(rgb);
@@ -83,6 +90,12 @@ void Rebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus:
         auto tempPts = std::make_shared<pcl::PointCloud<pcl::PointXYZRGB>>();
         tempPts->resize(this->_pts->size());
         std::copy(this->_pts->cbegin(), this->_pts->cend(), tempPts->begin());
+        {
+            pcl::VoxelGrid<pcl::PointXYZRGB> filter;
+            filter.setLeafSize(0.02, 0.02, 0.02);
+            filter.setInputCloud(tempPts);
+            filter.filter(*tempPts);
+        }
         emit this->signalPCLShowPointCloud(tempPts, this->_curTcw);
         this->_pts->clear();
         this->_pcl_visual_need_data = false;
