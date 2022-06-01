@@ -1,53 +1,42 @@
 #pragma once
 
+#include <cmath>
 #include <iostream>
 #include <tuple>
-#include <cmath>
 
-namespace ns_clp
-{
+namespace ns_clp {
     using rgb = std::tuple<int, int, int>;
     using hsv = std::tuple<float, float, float>;
+
     /**
-     * \brief translate the hsv color space to rgb color space
-     * 
-     */
-    class HSV2RGB
-    {
-    private:
-        HSV2RGB() = delete;
+   * \brief translate the hsv color space to rgb color space
+   *
+   */
+    rgb trans(const hsv &val);
 
-    public:
-        static rgb trans(const hsv &val);
-    };
-
-    /** 
-     * \brief different color types for the projection
-     */
-    class Color
-    {
-    public:
-        enum class Elem
-        {
+    /**
+   * \brief different color types for the projection
+   */
+    namespace Color {
+        enum class Elem {
             Hue,
             Saturation,
             Value
         };
         /**
-         * \brief define your own color style by writing this structure
-         *        the [_min, _max] means the change range, it's for 
-         *        h[0.0, 360.0],
-         *        s[0.0, 1.0],
-         *        v[0.0, 1.0]
-         *        and the [_hsv] points the change elem.
-         * \attention for example, ColorTypw{0.0, 180.0, 1.0, 0.5, Elem::Hue}
-         *        it means:
-         *        h[0.0, 180.0],
-         *        s = 1.0,
-         *        v = 0.5
-         */
-        struct ColorType
-        {
+     * \brief define your own color style by writing this structure
+     *        the [_min, _max] means the change range, it's for
+     *        h[0.0, 360.0],
+     *        s[0.0, 1.0],
+     *        v[0.0, 1.0]
+     *        and the [_hsv] points the change elem.
+     * \attention for example, ColorTypw{0.0, 180.0, 1.0, 0.5, Elem::Hue}
+     *        it means:
+     *        h[0.0, 180.0],
+     *        s = 1.0,
+     *        v = 0.5
+     */
+        struct ColorType {
             float _min;
             float _max;
             float _v1;
@@ -55,9 +44,8 @@ namespace ns_clp
             Elem _hsv;
         };
 
-    public:
         /**
-     * 
+     *
      * \brief color types
      */
         constexpr static ColorType red_yellow{0.0, 60.0, 1.0, 1.0, Elem::Hue};
@@ -88,23 +76,8 @@ namespace ns_clp
         constexpr static ColorType worm{0.0, 180.0, 1.0, 1.0, Elem::Hue};
     };
 
-    class ColorPrj
-    {
-    private:
-        ColorPrj() = delete;
+    rgb project(float val, float min, float max,
+                bool isReversal = false, int classify = 0,
+                const Color::ColorType &color = Color::gray);
 
-    public:
-        /**
-     * \brief project the val to the [color] space
-     * \param val the value
-     * \param min the min value
-     * \param max the max value
-     * \param isReversal to reverse the color grade
-     * \param classify to decide the color Graded or successive
-     *        if it's zero or one or negative, means successive
-     * \param color the color type, default: gray
-     */
-        static rgb project(float val, float min, float max,
-                           bool isReversal = false, int classify = 0, const Color::ColorType &color = Color::gray);
-    };
 } // namespace ns_clp

@@ -1,8 +1,8 @@
 #include "rebuilder.h"
 #include "QThread"
+#include "colorPrj.h"
 #include "embed.h"
 #include <QDebug>
-#include <colorPrj.h>
 #include <opencv2/highgui.hpp>
 
 Rebuilder::Rebuilder(QObject *parent)
@@ -66,8 +66,7 @@ void Rebuilder::processNewDepthFrame(cv::Mat colorImg, cv::Mat depthImg, Sophus:
             frameCloud->push_back(pcl::PointXYZRGB(p_w(0), p_w(1), p_w(2), c[2], c[1], c[0]));
 
             // --- for color projection ---
-            d /= 1000.0;
-            auto rgb = ns_clp::ColorPrj::project(d, 0.0, 2.5, true, 0, ns_clp::Color::red_yellow);
+            auto rgb = ns_clp::project(d / 1000.0, 0.0, 4, false, 0, ns_clp::Color::panchromatic);
             colorPtr[3 * u + 0] = std::get<2>(rgb);
             colorPtr[3 * u + 1] = std::get<1>(rgb);
             colorPtr[3 * u + 2] = std::get<0>(rgb);
