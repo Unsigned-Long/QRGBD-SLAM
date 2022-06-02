@@ -5,29 +5,25 @@
 #include "opencv2/highgui/highgui.hpp"
 
 Recognizer::Recognizer(QObject *parent)
-    : QObject(parent)
-{
+    : QObject(parent) {
 }
 
-Recognizer::~Recognizer()
-{
+Recognizer::~Recognizer() {
     delete ui;
 }
 
-void Recognizer::processNewColorFrame(cv::Mat srcImg)
-{
+void Recognizer::processNewColorFrame(cv::Mat srcImg) {
     cv::Mat dstImg = srcImg.clone();
 
     // do process
 
-    yoloDetector(dstImg, this->_classesVec, *(this->_detector));
+    //yoloDetector(dstImg, this->_classesVec, *(this->_detector));
 
     // show image
     emit this->signalProcessNewFrameFinished(dstImg);
 }
 
-void Recognizer::init(ConfigDialog *cof)
-{
+void Recognizer::init(ConfigDialog *cof) {
     qDebug() << "Recognizer thread: " << QThread::currentThread();
 
     std::ifstream ifs(cof->_classes.toStdString().c_str());
