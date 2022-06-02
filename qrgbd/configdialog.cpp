@@ -11,10 +11,10 @@ ConfigDialog::ConfigDialog(QWidget *parent) : QDialog(parent),
     this->connection();
     {
         // pre setting
-        this->_temp_seqPath = this->_seqPath = "/home/csl/dataset/2022-5-30-21-53-28";
-        this->_temp_colorImgPath = this->_colorImgPath = "/home/csl/dataset/2022-5-30-21-53-28";
-        this->_temp_depthImgPath = this->_depthImgPath = "/home/csl/dataset/2022-5-30-21-53-28";
-        this->_temp_assoPath = this->_assoPath = "/home/csl/dataset/2022-5-30-21-53-28/info/associate.txt";
+        this->_temp_seqPath = this->_seqPath = "/home/csl/dataset/rgbd-slam/2022-6-2-8-19-15";
+        this->_temp_colorImgPath = this->_colorImgPath = "/home/csl/dataset/rgbd-slam/2022-6-2-8-19-15/color";
+        this->_temp_depthImgPath = this->_depthImgPath = "/home/csl/dataset/rgbd-slam/2022-6-2-8-19-15/depth";
+        this->_temp_assoPath = this->_assoPath = "/home/csl/dataset/rgbd-slam/2022-6-2-8-19-15/info/associate.txt";
         // -----------
         this->_temp_settingPath = this->_settingPath = "/home/csl/TempWork/rgbd-slam/config/rgbd.yaml";
         this->_temp_vocPath = this->_vocPath = "/home/csl/SoftWare/ORB_SLAM3/Vocabulary/ORBvoc.txt";

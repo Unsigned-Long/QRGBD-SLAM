@@ -92,3 +92,7 @@
 ​        *a) Interactive visualization: when the slam is completed or terminated, the interactive visualization mode is enabled. Users can manipulate the PCL point cloud window through the mouse to view the point cloud from multiple angles and levels;*
 
 ​        *b) Rendering visualization: when slam is performed, the PCL window is performed in a rendering visualization manner. Specifically, visualize the point cloud to be incrementally visualized in each frame, track the position of the camera, and change the viewport to simulate the perspective during data collection.*
+
+## 4. RunTime
+
+<img src="./img/screen/2022-06-03_02-16.png" width=50%><img src="./img/screen/2022-06-03_02-20.png" width=50%><img src="./img/screen/2022-06-03_02-23.png" width=50%><img src="./img/screen/2022-06-03_02-24.png" width=50%><img src="./img/screen/2022-06-03_02-25.png" width=50%><img src="./img/screen/2022-06-03_02-30.png" width=50%><img src="./img/screen/2022-06-03_02-51.png" width=50%><img src="./img/screen/2022-06-03_02-52.png" width=50%><img src="./img/screen/2022-06-03_02-53.png" width=50%><img src="./img/screen/2022-06-03_02-56.png" width=50%><img src="./img/screen/2022-06-03_02-57.png" width=50%>
